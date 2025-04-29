@@ -3,9 +3,23 @@
 #include <stdlib.h>
 #include "users.h"
 
-int registrar(char newUsername[20])
+int registrar(char username[20], char password[20])
 {
-    FILE *fp = fopen("usersWaiting.txt", "w");
+    FILE *fp = fopen("users.bat", "wb");
+
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o ficheiro\n");
+        return -1;
+    }
+    USER user;
+    user.username = username;
+    user.password = password;
+    user.state = 0;
+    fwrite(&user, sizeof(USER), 1, fp);
+    printf("Pedido de incrição enviado com sucesso\n");
+    fclose(fp);
+    return 0;
 }
 
 int usernameVerif(char username[20])
@@ -41,13 +55,17 @@ int usernameVerif(char username[20])
         fclose(fp);
         printf("Este utilizador não existe, deseja enviar um pedido de criação?\n");
         printf("1 - SIM\n");
-        print("0 - NÃO\n");
+        printf("0 - NÃO\n");
         int option;
         scanf("%d", &option);
         if (option == 1)
         {
-            registrar(username);
-            printf("Pedido de incrição enviado com sucesso\n");
+            printf("Introduza uma password de acesso\n");
+            char password[20];
+            fgets(password, sizeof(password), stdin);
+            password[strcspn(password, "\n")] = '\0';
+
+            registrar(username, password);
         }
         return -1;
     }

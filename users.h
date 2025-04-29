@@ -1,6 +1,5 @@
-#include "users.c"
 
-typedef struct user
+typedef struct
 {
     char username[20];
     char password[20];
@@ -10,3 +9,5 @@ typedef struct user
 int passwordVerif(char username[20], char passwd[20]);
 
 int usernameVerif(char flg[20]);
+
+int registrar(char newUsername[20]);

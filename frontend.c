@@ -19,7 +19,7 @@ int loginMenu()
     fgets(inputU, sizeof(inputU), stdin);
     inputU[strcspn(inputU, "\n")] = '\0';
 
-    int resU = usernameVerif(inputS);
+    int resU = usernameVerif(inputU);
 
     if (resU != 0)
     {
@@ -29,7 +29,7 @@ int loginMenu()
     fgets(inputP, sizeof(inputP), stdin);
     inputP[strcspn(inputP, "\n")] = '\0';
 
-    resP = passwordVerif(inputU, inputP);
+    int resP = passwordVerif(inputU, inputP);
     if (resP != 0)
     {
         return -1;
@@ -39,8 +39,9 @@ int loginMenu()
 
 int main(int argc, char const *argv[])
 {
+    int res;
     do
     {
-        int res = loginMenu();
+        res = loginMenu();
     } while (res != 0);
 }
