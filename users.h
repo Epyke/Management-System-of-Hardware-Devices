@@ -12,11 +12,15 @@ typedef struct elem
     struct elem *seguinte;
 } ELEM;
 
-int passwordVerif(char username[20], char passwd[20]);
+int AdminSetup(ELEM *inicio);
 
-int usernameVerif(char flg[20]);
+int AdminPasswordChange(ELEM *inicio);
 
-int registrar(char username[20], char password[20]);
+int passwordVerif(char username[20], char passwd[20], ELEM inicio);
+
+int usernameVerif(char username[20], ELEM *inicio);
+
+int registrar(char username[20], char password[20], ELEM *inicio);
 
 int insIniLista(ELEM **inicio, USER info);
 

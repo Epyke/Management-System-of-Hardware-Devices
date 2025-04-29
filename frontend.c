@@ -6,18 +6,17 @@ int loginMenu(ELEM *inicio)
 {
     char inputU[20];
     char inputP[20];
-    FILE *fp = fopen("users.bat", "rb");
 
-    if (fp == NULL)
-    {
-        printf("Erro ao abrir o ficheiro\n");
-        return -1;
-    }
-
-    printf("-----------------------------------WELCOME-----------------------------------\n");
-    printf("Username: ");
+    printf("\n-----------------------------------WELCOME-----------------------------------\n");
+    printf("Escreva EXIT se pretender terminar o programa\n");
+    printf("\nUsername: ");
     fgets(inputU, sizeof(inputU), stdin);
     inputU[strcspn(inputU, "\n")] = '\0';
+
+    if (strcmp(inputU, "exit") == 0 || strcmp(inputU, "Exit") == 0 || strcmp(inputU, "EXIT") == 0)
+    {
+        return 0;
+    }
 
     int resU = usernameVerif(inputU, inicio);
 
@@ -30,6 +29,11 @@ int loginMenu(ELEM *inicio)
     fgets(inputP, sizeof(inputP), stdin);
     inputP[strcspn(inputP, "\n")] = '\0';
 
+    if (strcmp(inputP, "exit") == 0 || strcmp(inputP, "Exit") == 0 || strcmp(inputP, "EXIT") == 0)
+    {
+        return 0;
+    }
+
     int resP = passwordVerif(inputU, inputP, *inicio);
 
     if (resP != 0)
@@ -37,7 +41,9 @@ int loginMenu(ELEM *inicio)
         return -1;
     }
 
-    fprintf("Bem-vindo %s", inputU);
+    AdminPasswordChange(inicio);
+    printf("Bem-vindo %s", inputU);
+
     return 0;
 }
 
@@ -46,6 +52,7 @@ int main(int argc, char const *argv[])
     int res;
     ELEM *inicio = NULL;
     inicio = importUsers();
+    AdminSetup(inicio);
     do
     {
         res = loginMenu(inicio);
