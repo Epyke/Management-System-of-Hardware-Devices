@@ -15,28 +15,29 @@ int handlePermissions(ELEM *inicio, char username[20])
             printf("1 - Ativar utilizadores\n");
             printf("2 - Gerir equipamentos\n");
             printf("3 - Consultar inventario\n");
-            printf("4 - Criar relatório\n");
-            printf("5 - Histórico\n");
+            printf("4 - Criar relatorio\n");
+            printf("5 - Historico\n");
             printf("6 - Avarias recorrentes\n");
             printf("7 - Equipamentos antigos\n");
             printf("8 - Reiniciar conta admin\n");
             printf("0 - logout\n");
+            printf("Escolha uma opcao: ");
             scanf("%d", &input);
             getchar();
 
             switch (input)
             {
             case 1:
-                // code
+                ativarUtilizadores(inicio);
                 break;
             case 8:
-                // code
+                resetAdmin(&inicio);
                 break;
             case 0:
-                printf("Logout concluido\n\n");
+                printf("\nLogout concluido\n\n");
                 break;
             default:
-                printf("Valor introduzido incorreto, tente novamente\n\n");
+                printf("\nValor introduzido incorreto, tente novamente\n\n");
                 break;
             }
         } while (input != 0);
@@ -51,24 +52,21 @@ int handlePermissions(ELEM *inicio, char username[20])
             printf("1 - Consultar equipamentos\n");
             printf("2 - Listar para ficheiro\n");
             printf("3 - Consultar inventario\n");
-            printf("4 - Registar uma nova avaria ou manutenção\n");
+            printf("4 - Registar uma nova avaria ou manutencao\n");
             printf("5 - Gerir equipamentos\n");
-            printf("6 - Registar componentes substituídas\n");
+            printf("6 - Registar componentes substituidas\n");
             printf("0 - logout\n");
-            printf("Escolhe uma opção: ");
+            printf("Escolhe uma opcao: ");
             scanf("%d", &input);
             getchar();
 
             switch (input)
             {
-            case 1:
-                /* code */
-                break;
             case 0:
-                printf("Logout concluido\n\n");
+                printf("\nLogout concluido\n\n");
                 break;
             default:
-                printf("Valor introduzido incorreto, tente novamente\n\n");
+                printf("\nValor introduzido incorreto, tente novamente\n\n");
                 break;
             }
         } while (input != 0);
@@ -130,4 +128,5 @@ int main(int argc, char const *argv[])
     {
         res = loginMenu(inicio);
     } while (res != 0);
+    usersRelease(&inicio);
 }
