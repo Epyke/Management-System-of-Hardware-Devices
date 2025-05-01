@@ -2,6 +2,79 @@
 #include <string.h>
 #include "users.h"
 
+int handlePermissions(ELEM *inicio, char username[20])
+{
+
+    if (strcmp(username, "admin") == 0)
+    {
+        int input;
+        do
+        {
+
+            printf("\n-----------------------------------MENU-----------------------------------\n");
+            printf("1 - Ativar utilizadores\n");
+            printf("2 - Gerir equipamentos\n");
+            printf("3 - Consultar inventario\n");
+            printf("4 - Criar relatório\n");
+            printf("5 - Histórico\n");
+            printf("6 - Avarias recorrentes\n");
+            printf("7 - Equipamentos antigos\n");
+            printf("8 - Reiniciar conta admin\n");
+            printf("0 - logout\n");
+            scanf("%d", &input);
+            getchar();
+
+            switch (input)
+            {
+            case 1:
+                // code
+                break;
+            case 8:
+                // code
+                break;
+            case 0:
+                printf("Logout concluido\n\n");
+                break;
+            default:
+                printf("Valor introduzido incorreto, tente novamente\n\n");
+                break;
+            }
+        } while (input != 0);
+    }
+    else
+    {
+        int input;
+        do
+        {
+
+            printf("\n-----------------------------------MENU-----------------------------------\n");
+            printf("1 - Consultar equipamentos\n");
+            printf("2 - Listar para ficheiro\n");
+            printf("3 - Consultar inventario\n");
+            printf("4 - Registar uma nova avaria ou manutenção\n");
+            printf("5 - Gerir equipamentos\n");
+            printf("6 - Registar componentes substituídas\n");
+            printf("0 - logout\n");
+            printf("Escolhe uma opção: ");
+            scanf("%d", &input);
+            getchar();
+
+            switch (input)
+            {
+            case 1:
+                /* code */
+                break;
+            case 0:
+                printf("Logout concluido\n\n");
+                break;
+            default:
+                printf("Valor introduzido incorreto, tente novamente\n\n");
+                break;
+            }
+        } while (input != 0);
+    }
+}
+
 int loginMenu(ELEM *inicio)
 {
     char inputU[20];
@@ -43,7 +116,7 @@ int loginMenu(ELEM *inicio)
 
     AdminPasswordChange(inicio);
     printf("Bem-vindo %s", inputU);
-
+    handlePermissions(inicio, inputU);
     return 0;
 }
 
