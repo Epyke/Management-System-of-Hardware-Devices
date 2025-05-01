@@ -31,7 +31,7 @@ int handlePermissions(ELEM *inicio, char username[20])
                 ativarUtilizadores(inicio);
                 break;
             case 8:
-                resetAdmin(&inicio);
+                resetAdmin(inicio);
                 break;
             case 0:
                 printf("\nLogout concluido\n\n");
