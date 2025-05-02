@@ -16,7 +16,7 @@ int AdminSetup(ELEM *inicio);
 
 int AdminPasswordChange(ELEM *inicio);
 
-int resetAdmin(ELEM *inicio);
+int resetAdmin(ELEM **inicio);
 
 int passwordVerif(char username[20], char passwd[20], ELEM inicio);
 
@@ -30,4 +30,4 @@ ELEM *importUsers();
 
 int usersRelease(ELEM **inicio);
 
-int ativarUtilizadores(ELEM *inicio);
+int ativarUtilizadores(ELEM **inicio);

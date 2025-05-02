@@ -35,7 +35,7 @@ int AdminSetup(ELEM *inicio)
     return 0;
 }
 
-int saveChanges(ELEM *inicio)
+int writeChanges(ELEM *inicio)
 {
     FILE *fp = fopen("users.bat", "wb");
 
@@ -70,18 +70,18 @@ int AdminPasswordChange(ELEM *inicio)
             input[strcspn(input, "\n")] = '\0';
             strcpy(aux->info.password, input);
             aux->info.state = 2;
-            saveChanges(inicio);
+            writeChanges(inicio);
             return 0;
         }
     }
     return -1;
 }
 
-int resetAdmin(ELEM *inicio)
+int resetAdmin(ELEM **inicio)
 {
     ELEM *aux = NULL;
     int flg = 0;
-    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
     {
         if (strcmp(aux->info.username, "admin") == 0 && aux->info.state == 2)
         {
@@ -93,7 +93,7 @@ int resetAdmin(ELEM *inicio)
     {
         aux->info.state = 1;
         strcpy(aux->info.password, "admin");
-        saveChanges(inicio);
+        writeChanges(*inicio);
 
         return 0;
     }
@@ -141,12 +141,21 @@ ELEM *importUsers()
 
     USER user;
     ELEM *inicio = NULL;
+    int res = 0;
 
     while (!feof(fp))
     {
-        fread(&user, sizeof(USER), 1, fp);
-        insIniLista(&inicio, user);
+        res = fread(&user, sizeof(USER), 1, fp);
+        if (res == 1)
+        {
+            insIniLista(&inicio, user);
+        }
+        else
+        {
+            break;
+        }
     }
+
     fclose(fp);
     return inicio;
 }
@@ -171,6 +180,7 @@ int usersRelease(ELEM **inicio)
 
 int registrar(char username[20], char password[20], ELEM *inicio)
 {
+
     FILE *fp = fopen("users.bat", "ab");
 
     if (fp == NULL)
@@ -194,38 +204,43 @@ int registrar(char username[20], char password[20], ELEM *inicio)
 int usernameVerif(char username[20], ELEM *inicio)
 {
     ELEM *aux = NULL;
+    int user_exists = 0;
 
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (strcmp(aux->info.username, username) == 0 && aux->info.state == 2)
+        if (strcmp(aux->info.username, username) == 0)
         {
-            return 0;
-        }
-        if (strcmp(aux->info.username, username) == 0 && aux->info.state == 1)
-        {
-            return 0;
-        }
-        if (strcmp(aux->info.username, username) == 0 && aux->info.state == 0)
-        {
-            printf("O utilizador introduzido se encontra na lista de ativacao\n");
-            return -1;
+            user_exists = 1;
+
+            if (aux->info.state == 0)
+            {
+                printf("O utilizador introduzido se encontra na lista de ativacao\n");
+                return -1;
+            }
+            else if (aux->info.state == 1 || aux->info.state == 2)
+            {
+                return 0;
+            }
         }
     }
 
-    printf("Este utilizador nao existe, deseja enviar um pedido de criacao?\n");
-    printf("1 - SIM\n");
-    printf("0 - NAO\n");
-    int option;
-    scanf("%d", &option);
-    getchar();
-    if (option == 1)
+    if (user_exists == 0)
     {
-        printf("Introduza uma password de acesso\n");
-        char password[20];
-        fgets(password, sizeof(password), stdin);
-        password[strcspn(password, "\n")] = '\0';
+        printf("Este utilizador nao existe, deseja enviar um pedido de criacao?\n");
+        printf("1 - SIM\n");
+        printf("0 - NAO\n");
+        int option;
+        scanf("%d", &option);
+        getchar();
+        if (option == 1)
+        {
+            printf("Introduza uma password de acesso\n");
+            char password[20];
+            fgets(password, sizeof(password), stdin);
+            password[strcspn(password, "\n")] = '\0';
 
-        registrar(username, password, inicio);
+            registrar(username, password, inicio);
+        }
     }
     return -1;
 }
@@ -236,7 +251,7 @@ int passwordVerif(char username[20], char passwd[20], ELEM inicio)
 
     for (aux = &inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (strcmp(aux->info.password, passwd) == 0 && aux->info.state == 1)
+        if (strcmp(aux->info.password, passwd) == 0 && (aux->info.state == 1 || aux->info.state == 2))
         {
             return 0;
         }
@@ -251,15 +266,18 @@ void printUtilizadores(ELEM *inicio)
     printf("--------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("%-20s | %-20s | %-2d \n", aux->info.username, aux->info.password, aux->info.state);
+        if (aux->info.state == 1 || aux->info.state == 0)
+        {
+            printf("%-20s | %-20s | %-2d \n", aux->info.username, aux->info.password, aux->info.state);
+        }
     }
     printf("--------------------------------------------------------------------------------------------\n");
 }
 
-int ativarUtilizadores(ELEM *inicio)
+int ativarUtilizadores(ELEM **inicio)
 {
     char input[20];
-    printUtilizadores(inicio);
+    printUtilizadores(*inicio);
 
     ELEM *aux = NULL;
     int count = 0;
@@ -269,76 +287,76 @@ int ativarUtilizadores(ELEM *inicio)
         printf("\nIntroduza o nome de um utilizador: ");
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = '\0';
-        printf("--------------------------------------------------------------------------------------------\n");
-        for (aux = inicio; aux != NULL; aux = aux->seguinte)
+
+        if (strcmp(input, "Exit") == 0 || strcmp(input, "exit") == 0 || strcmp(input, "EXIT") == 0)
         {
-            if (strstr(aux->info.username, input))
+            break;
+        }
+
+        printf("--------------------------------------------------------------------------------------------\n");
+        for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+        {
+            if (strstr(aux->info.username, input) && (aux->info.state == 1 || aux->info.state == 0))
             {
                 count++;
                 printf("%-20s | %-20s | %-2d \n", aux->info.username, aux->info.password, aux->info.state);
             }
         }
         printf("--------------------------------------------------------------------------------------------\n");
-    } while (count != 1);
+    } while (count > 1);
 
-    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    if (count == 0)
     {
-        if (strstr(aux->info.username, input))
+        printf("Nenhum utilizador encontrado\n");
+        return -1;
+    }
+
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (strstr(aux->info.username, input) && (aux->info.state == 1 || aux->info.state == 0))
         {
             break;
         }
     }
 
     int input2;
-    if (aux->info.state = 0)
+    if (aux->info.state == 0)
     {
-        do
-        {
-            printf("Deseja ativar o utilizador %s ?\n");
-            printf("1 - Ativar\n");
-            printf("0 - Sair\n");
-            printf("Escolha uma opção: ");
-            scanf("%d", &input2);
-            getchar();
+        printf("Deseja ativar o utilizador %s ?\n");
+        printf("1 - Ativar\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &input2);
+        getchar();
 
-            switch (input2)
-            {
-            case 1:
-                aux->info.state = 1;
-                break;
-            case 0:
-                break;
-            default:
-                printf("\nValor introduzido incorreto, por favor tente novamente\n");
-                break;
-            }
-        } while (input2 != 0);
-        return 0;
+        switch (input2)
+        {
+        case 1:
+            aux->info.state = 1;
+            break;
+        default:
+            break;
+        }
     }
     else
     {
-        do
-        {
-            printf("Deseja desativar o utilziador %s ?\n");
-            printf("1 - Desativar\n");
-            printf("0 - Sair\n");
-            printf("Escolha uma opção: ");
-            scanf("%d", &input2);
-            getchar();
 
-            switch (input2)
-            {
-            case 1:
-                aux->info.state = 0;
-                break;
-            case 0:
-                break;
-            default:
-                printf("\nValor introduzido incorreto, por favor tente novamente\n");
-                break;
-            }
-        } while (input2 != 0);
-        return 0;
+        printf("Deseja desativar o utilziador %s ?\n");
+        printf("1 - Desativar\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &input2);
+        getchar();
+
+        switch (input2)
+        {
+        case 1:
+            aux->info.state = 0;
+            break;
+        default:
+            break;
+        }
     }
-    return -1;
+    writeChanges(*inicio);
+    return 0;
 }

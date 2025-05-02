@@ -2,7 +2,7 @@
 #include <string.h>
 #include "users.h"
 
-int handlePermissions(ELEM *inicio, char username[20])
+int handlePermissions(ELEM **inicio, char username[20])
 {
 
     if (strcmp(username, "admin") == 0)
@@ -73,7 +73,7 @@ int handlePermissions(ELEM *inicio, char username[20])
     }
 }
 
-int loginMenu(ELEM *inicio)
+int loginMenu(ELEM **inicio)
 {
     char inputU[20];
     char inputP[20];
@@ -89,7 +89,7 @@ int loginMenu(ELEM *inicio)
         return 0;
     }
 
-    int resU = usernameVerif(inputU, inicio);
+    int resU = usernameVerif(inputU, *inicio);
 
     if (resU != 0)
     {
@@ -105,14 +105,14 @@ int loginMenu(ELEM *inicio)
         return 0;
     }
 
-    int resP = passwordVerif(inputU, inputP, *inicio);
+    int resP = passwordVerif(inputU, inputP, **inicio);
 
     if (resP != 0)
     {
         return -1;
     }
 
-    AdminPasswordChange(inicio);
+    AdminPasswordChange(*inicio);
     printf("Bem-vindo %s", inputU);
     handlePermissions(inicio, inputU);
     return 0;
@@ -126,7 +126,7 @@ int main(int argc, char const *argv[])
     AdminSetup(inicio);
     do
     {
-        res = loginMenu(inicio);
+        res = loginMenu(&inicio);
     } while (res != 0);
     usersRelease(&inicio);
 }
