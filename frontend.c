@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "users.h"
+#include "equipements.h"
 
-int handlePermissions(ELEM **inicio, char username[20])
+int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_E **inicioEquip)
 {
 
     if (strcmp(username, "admin") == 0)
@@ -28,10 +29,10 @@ int handlePermissions(ELEM **inicio, char username[20])
             switch (input)
             {
             case 1:
-                ativarUtilizadores(inicio);
+                ativarUtilizadores(inicioUser);
                 break;
             case 8:
-                resetAdmin(inicio);
+                resetAdmin(inicioUser);
                 break;
             case 0:
                 printf("\nLogout concluido\n\n");
@@ -73,7 +74,7 @@ int handlePermissions(ELEM **inicio, char username[20])
     }
 }
 
-int loginMenu(ELEM **inicio)
+int loginMenu(ELEM_U **inicioUser, ELEM_E **inicioEquip)
 {
     char inputU[20];
     char inputP[20];
@@ -89,7 +90,7 @@ int loginMenu(ELEM **inicio)
         return 0;
     }
 
-    int resU = usernameVerif(inputU, *inicio);
+    int resU = usernameVerif(inputU, *inicioUser);
 
     if (resU != 0)
     {
@@ -105,28 +106,31 @@ int loginMenu(ELEM **inicio)
         return 0;
     }
 
-    int resP = passwordVerif(inputU, inputP, **inicio);
+    int resP = passwordVerif(inputU, inputP, **inicioUser);
 
     if (resP != 0)
     {
         return -1;
     }
 
-    AdminPasswordChange(*inicio);
+    AdminPasswordChange(*inicioUser);
     printf("Bem-vindo %s", inputU);
-    handlePermissions(inicio, inputU);
+    handlePermissions(inicioUser, inputU, inicioEquip);
     return 0;
 }
 
 int main(int argc, char const *argv[])
 {
     int res;
-    ELEM *inicio = NULL;
-    inicio = importUsers();
-    AdminSetup(inicio);
+    ELEM_U *inicioUser = NULL;
+    ELEM_E *inicioEquip = NULL;
+    inicioUser = importUsers();
+    inicioEquip = importEquips();
+    AdminSetup(inicioUser);
     do
     {
-        res = loginMenu(&inicio);
+        res = loginMenu(&inicioUser, &inicioEquip);
     } while (res != 0);
-    usersRelease(&inicio);
+    usersRelease(&inicioUser);
+    equipsRelease(&inicioEquip);
 }
