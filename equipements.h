@@ -18,3 +18,5 @@ typedef struct elem
 ELEM_E *importEquips();
 
 int equipsRelease(ELEM_E **inicio);
+
+int getEquipsNumb();

@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "equipements.h"
 
+int getEquipsNumb()
+{
+    FILE *fp = fopen("equips.bat", "rb");
+
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o ficheiro\n");
+        return -1;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    int numb = ftell(fp) / sizeof(EQUIPE);
+    fclose(fp);
+    return numb;
+}
+
 int insIniLista(ELEM_E **inicio, EQUIPE info)
 {
     ELEM_E *new = NULL;

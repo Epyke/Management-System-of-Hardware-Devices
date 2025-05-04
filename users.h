@@ -6,28 +6,28 @@ typedef struct aluno
     int state;
 } USER;
 
-typedef struct elem
+typedef struct elem_u
 {
     USER info;
-    struct elem *seguinte;
-} ELEM;
+    struct elem_u *seguinte;
+} ELEM_U;
 
-int AdminSetup(ELEM *inicio);
+int AdminSetup(ELEM_U *inicio);
 
-int AdminPasswordChange(ELEM *inicio);
+int AdminPasswordChange(ELEM_U *inicio);
 
-int resetAdmin(ELEM **inicio);
+int resetAdmin(ELEM_U **inicio);
 
-int passwordVerif(char username[20], char passwd[20], ELEM inicio);
+int passwordVerif(char username[20], char passwd[20], ELEM_U inicio);
 
-int usernameVerif(char username[20], ELEM *inicio);
+int usernameVerif(char username[20], ELEM_U *inicio);
 
-int registrar(char username[20], char password[20], ELEM *inicio);
+int registrar(char username[20], char password[20], ELEM_U *inicio);
 
-int insIniLista(ELEM **inicio, USER info);
+int insIniLista(ELEM_U **inicio, USER info);
 
-ELEM *importUsers();
+ELEM_U *importUsers();
 
-int usersRelease(ELEM **inicio);
+int usersRelease(ELEM_U **inicio);
 
-int ativarUtilizadores(ELEM **inicio);
+int ativarUtilizadores(ELEM_U **inicio);

@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include "users.h"
 
-int AdminSetup(ELEM *inicio)
+int AdminSetup(ELEM_U *inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
 
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
@@ -35,7 +35,7 @@ int AdminSetup(ELEM *inicio)
     return 0;
 }
 
-int writeChanges(ELEM *inicio)
+int writeChanges(ELEM_U *inicio)
 {
     FILE *fp = fopen("users.bat", "wb");
 
@@ -45,7 +45,7 @@ int writeChanges(ELEM *inicio)
         return -1;
     }
 
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
     aux = inicio;
     while (aux != NULL)
     {
@@ -55,9 +55,9 @@ int writeChanges(ELEM *inicio)
     fclose(fp);
 }
 
-int AdminPasswordChange(ELEM *inicio)
+int AdminPasswordChange(ELEM_U *inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
 
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
@@ -77,9 +77,9 @@ int AdminPasswordChange(ELEM *inicio)
     return -1;
 }
 
-int resetAdmin(ELEM **inicio)
+int resetAdmin(ELEM_U **inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
     int flg = 0;
     for (aux = *inicio; aux != NULL; aux = aux->seguinte)
     {
@@ -101,12 +101,13 @@ int resetAdmin(ELEM **inicio)
     {
         return -1;
     }
+    printf("Conta admin reinicializada\n");
 }
 
-int insIniLista(ELEM **inicio, USER info)
+int insIniLista(ELEM_U **inicio, USER info)
 {
-    ELEM *new = NULL;
-    new = (ELEM *)calloc(1, sizeof(ELEM));
+    ELEM_U *new = NULL;
+    new = (ELEM_U *)calloc(1, sizeof(ELEM_U));
 
     if (new == NULL)
     {
@@ -129,7 +130,7 @@ int insIniLista(ELEM **inicio, USER info)
     return 0;
 }
 
-ELEM *importUsers()
+ELEM_U *importUsers()
 {
     FILE *fp = fopen("users.bat", "rb");
 
@@ -140,7 +141,7 @@ ELEM *importUsers()
     }
 
     USER user;
-    ELEM *inicio = NULL;
+    ELEM_U *inicio = NULL;
     int res = 0;
 
     while (!feof(fp))
@@ -160,13 +161,13 @@ ELEM *importUsers()
     return inicio;
 }
 
-int usersRelease(ELEM **inicio)
+int usersRelease(ELEM_U **inicio)
 {
     if (*inicio == NULL)
     {
         return -1;
     }
-    ELEM *aux = NULL, *next = NULL;
+    ELEM_U *aux = NULL, *next = NULL;
     aux = *inicio;
 
     while (aux != NULL)
@@ -178,7 +179,7 @@ int usersRelease(ELEM **inicio)
     *inicio = NULL;
 }
 
-int registrar(char username[20], char password[20], ELEM *inicio)
+int registrar(char username[20], char password[20], ELEM_U *inicio)
 {
 
     FILE *fp = fopen("users.bat", "ab");
@@ -201,9 +202,9 @@ int registrar(char username[20], char password[20], ELEM *inicio)
     return 0;
 }
 
-int usernameVerif(char username[20], ELEM *inicio)
+int usernameVerif(char username[20], ELEM_U *inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
     int user_exists = 0;
 
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
@@ -245,9 +246,9 @@ int usernameVerif(char username[20], ELEM *inicio)
     return -1;
 }
 
-int passwordVerif(char username[20], char passwd[20], ELEM inicio)
+int passwordVerif(char username[20], char passwd[20], ELEM_U inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
 
     for (aux = &inicio; aux != NULL; aux = aux->seguinte)
     {
@@ -260,9 +261,9 @@ int passwordVerif(char username[20], char passwd[20], ELEM inicio)
     return -1;
 }
 
-void printUtilizadores(ELEM *inicio)
+void printUtilizadores(ELEM_U *inicio)
 {
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
     printf("--------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
@@ -274,12 +275,12 @@ void printUtilizadores(ELEM *inicio)
     printf("--------------------------------------------------------------------------------------------\n");
 }
 
-int ativarUtilizadores(ELEM **inicio)
+int ativarUtilizadores(ELEM_U **inicio)
 {
     char input[20];
     printUtilizadores(*inicio);
 
-    ELEM *aux = NULL;
+    ELEM_U *aux = NULL;
     int count = 0;
 
     do
