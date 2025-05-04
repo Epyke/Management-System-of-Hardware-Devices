@@ -2,7 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include "users.h"
-
+/**
+ * @brief Função que verifica se existe um perfil admin, na lista ligada cujo inicio é fornecido como parâmetro e no ficheiro users.bat.
+ *  Se não existir nenhum perfil admin, a função insere um novo perfil admin com a password admin, na lista ligada e no ficheiro users.bat.
+ *
+ * @param inicio Apontador para o inicio da lista ligada.
+ * @return int Retorna 0 se for executado com sucesso, retorna -1 se occorer um erro na abertura d
+ */
 int AdminSetup(ELEM_U *inicio)
 {
     ELEM_U *aux = NULL;
