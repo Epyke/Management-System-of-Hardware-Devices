@@ -11,9 +11,10 @@ int inputDeparts(ELEM_D **inicioDeparts)
     fgets(depart.name, sizeof(depart.name), stdin);
     depart.name[strcspn(depart.name, "\n")] = '\0';
 
-    int numb = getDepartsNumb();
-    numb++;
-    registrarDeparts(depart, *inicioDeparts);
+    int numb = getDepartsNumb(*inicioDeparts);
+    numb = numb + 1;
+    depart.code = numb;
+    registrarDeparts(depart, inicioDeparts);
     return 0;
 }
 
@@ -99,6 +100,7 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 break;
             case 2:
                 departsMenu(inicioDepart);
+                break;
             case 9:
                 resetAdmin(inicioUser);
                 break;
