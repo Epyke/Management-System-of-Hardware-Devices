@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "users.h": "c",
+        "equipements.h": "c"
+    }
+}
