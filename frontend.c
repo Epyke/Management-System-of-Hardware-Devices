@@ -2,6 +2,7 @@
 #include <string.h>
 #include "users.h"
 #include "departements.h"
+#include "equipements.h"
 
 int inputDeparts(ELEM_D **inicioDeparts)
 {
@@ -60,6 +61,69 @@ void altDepartMenu(ELEM_D **inicioDeparts)
         }
     } while (input != 0);
 }
+
+void inputEquips(ELEM_E **inicioEquips)
+{
+    EQUIPE equip;
+    int id = getEquipsNumb();
+    id++;
+    equip.id = id;
+    printf("Introduza o tipo de equipamento\n");
+    fgets(equip.type, sizeof(equip.type), stdin);
+    equip.type[strcspn(equip.type, "\n")] = '\0';
+
+    fgets(equip.brand, sizeof(equip.brand), stdin);
+    equip.brand[strcspn(equip.brand, "\n")] = '\0';
+
+    scanf("%d", &equip.num_serie);
+
+    fgets(equip.date, sizeof(equip.date), stdin);
+    equip.date[strcspn(equip.date, "\n")] = '\0';
+
+    fgets(equip.state, sizeof(equip.state), stdin);
+    equip.state[strcspn(equip.state, "\n")] = '\0';
+
+    printEquips(*inicioEquips);
+    scanf("%d", equip.departement);
+    registrarEquips(equip, *inicioEquips);
+}
+
+void equipsMenu(ELEM_E **inicioEquips)
+{
+    int input, num;
+    do
+    {
+        printf("\n-----------------------------------EQUIPAMENTOS-----------------------------------\n");
+        printf("1 - Listar\n");
+        printf("2 - Adicionar\n");
+        printf("3 - Alterar\n");
+        printf("4 - Remover\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
+            printEquips(*inicioEquips);
+            break;
+        case 2:
+            printEquips(*inicioEquips);
+            inputEquips(inicioEquips);
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+
 void departsMenu(ELEM_D **inicioDeparts)
 {
     int input, num;
@@ -116,30 +180,7 @@ void departsMenu(ELEM_D **inicioDeparts)
     } while (input != 0);
 }
 
-/*
-void registarEquips()
-{
-    EQUIPE equip;
-    int id = getEquipsNumb();
-    id++;
-    equip.id = id;
-    printf("Introduza o tipo de equipamento\n");
-    fgets(equip.type, sizeof(equip.type), stdin);
-    equip.type[strcspn(equip.type, "\n")] = '\0';
-
-    fgets(equip.brand, sizeof(equip.brand), stdin);
-    equip.brand[strcspn(equip.brand, "\n")] = '\0';
-
-    scanf("%d", &equip.num_serie);
-
-    fgets(equip.date, sizeof(equip.date), stdin);
-    equip.date[strcspn(equip.date, "\n")] = '\0';
-
-    fgets(equip.state, sizeof(equip.state), stdin);
-    equip.state[strcspn(equip.state, "\n")] = '\0';
-}*/
-
-int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDepart)
+int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDepart, ELEM_E **inicioEquip)
 {
 
     if (strcmp(username, "admin") == 0)
@@ -171,6 +212,8 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             case 2:
                 departsMenu(inicioDepart);
                 break;
+            case 3:
+
             case 9:
                 resetAdmin(inicioUser);
                 break;
@@ -214,7 +257,7 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
     }
 }
 
-int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart)
+int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip)
 {
     char inputU[20];
     char inputP[20];
@@ -255,22 +298,25 @@ int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart)
 
     AdminPasswordChange(*inicioUser);
     printf("Bem-vindo %s", inputU);
-    handlePermissions(inicioUser, inputU, inicioDepart);
+    handlePermissions(inicioUser, inputU, inicioDepart, inicioEquip);
     return 0;
 }
 
 int main(int argc, char const *argv[])
 {
     int res;
+    ELEM_E *inicioEquips = NULL;
     ELEM_U *inicioUser = NULL;
     ELEM_D *inicioDepart = NULL;
+    inicioEquips = importEquips();
     inicioUser = importUsers();
     inicioDepart = importDeparts();
     AdminSetup(inicioUser);
     do
     {
-        res = loginMenu(&inicioUser, &inicioDepart);
+        res = loginMenu(&inicioUser, &inicioDepart, &inicioEquips);
     } while (res != 0);
+    equipsRelease(&inicioEquips);
     usersRelease(&inicioUser);
     departsRelease(&inicioDepart);
 }

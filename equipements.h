@@ -6,7 +6,7 @@ typedef struct equipe
     int num_serie;
     char date[11];
     char state[20];
-    char departement[30];
+    int departement;
 } EQUIPE;
 
 typedef struct elem
@@ -19,4 +19,8 @@ ELEM_E *importEquips();
 
 int equipsRelease(ELEM_E **inicio);
 
-int getEquipsNumb();
+int getDepartsNumb(ELEM_E *inicio);
+
+int registrarEquips(EQUIPE equip, ELEM_E *inicio);
+
+void printEquips(ELEM_E *inicio);
