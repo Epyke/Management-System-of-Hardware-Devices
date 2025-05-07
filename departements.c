@@ -11,13 +11,87 @@ int getDepartsNumb(ELEM_D *inicio)
     }
 
     ELEM_D *aux = NULL;
+    aux = inicio;
     int count = 0;
-    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    while (aux != NULL)
     {
         count++;
+        aux = aux->seguinte;
     }
 
     return count;
+}
+
+int VerificaNome(ELEM_D *inicio, char nome[])
+{
+    if (inicio == NULL)
+    {
+        return 0;
+    }
+
+    ELEM_D *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->info.name, nome) == 0)
+        {
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+    return 0;
+}
+
+ELEM_D *procurarDepart(ELEM_D **inicio, int numero)
+{
+
+    ELEM_D *aux = NULL, *previous = NULL;
+    int found = 0;
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.code == numero)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        return aux;
+    }
+    else
+    {
+        printf("Nenhum utilizador encontrado, tente novamente\n");
+        return NULL;
+    }
+}
+
+int eliminarDepart(ELEM_D **inicio, int numero)
+{
+    ELEM_D *aux = NULL, *previous = NULL;
+    aux = *inicio;
+    while (aux != NULL)
+    {
+        if (aux->info.code == numero)
+        {
+            if (previous == NULL)
+            {
+                *inicio = aux->seguinte;
+            }
+            else
+            {
+                previous->seguinte = aux->seguinte;
+            }
+            free(aux);
+            return 0;
+        }
+        previous = aux;
+        aux = aux->seguinte;
+    }
+
+    printf("Nenhum resultado encontrado, tente novamente\n");
+    return -1;
 }
 
 int insIniListaDeparts(ELEM_D **inicio, DEPART info)
@@ -97,8 +171,14 @@ int writeChangesDeparts(ELEM_D *inicio)
     fclose(fp);
 }
 
-int registrarDeparts(DEPART equip, ELEM_D **inicio)
+int registrarDeparts(DEPART info, ELEM_D **inicio)
 {
+
+    if (VerificaNome(*inicio, info.name) == 1)
+    {
+        printf("Nome de departamento ja existente\n");
+        return -1;
+    }
 
     FILE *fp = fopen("departements.bat", "ab");
 
@@ -108,8 +188,8 @@ int registrarDeparts(DEPART equip, ELEM_D **inicio)
         return -1;
     }
 
-    fwrite(&equip, sizeof(DEPART), 1, fp);
-    insIniListaDeparts(inicio, equip);
+    fwrite(&info, sizeof(DEPART), 1, fp);
+    insIniListaDeparts(inicio, info);
     printf("Equipamento criado com sucesso\n");
     fclose(fp);
     return 0;
@@ -131,6 +211,16 @@ int departsRelease(ELEM_D **inicio)
         aux = next;
     }
     *inicio = NULL;
+}
+
+void refreshDepartCodes(ELEM_D **inicio)
+{
+    int count = 1;
+    ELEM_D *aux = NULL;
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+    {
+        aux->info.code = count++;
+    }
 }
 
 void printDeparts(ELEM_D *inicio)

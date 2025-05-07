@@ -18,15 +18,27 @@ int inputDeparts(ELEM_D **inicioDeparts)
     return 0;
 }
 
-void departsMenu(ELEM_D **inicioDeparts)
+void altDepartMenu(ELEM_D **inicioDeparts)
 {
-    int input;
+    int input, target;
+    char newName[20];
+    ELEM_D *depart = NULL;
+
+    printDeparts(*inicioDeparts);
+    printf("Introduza o numero do departamento: ");
+    scanf("%d", &target);
+    getchar();
+    depart = procurarDepart(inicioDeparts, target);
+    if (depart == NULL)
+    {
+        return;
+    }
+
     do
     {
-        printf("\n-----------------------------------DEPARTAMENTOS-----------------------------------\n");
-        printf("1 - Adicionar departamento\n");
-        printf("2 - Alterar departamento\n");
-        printf("3 - Remover departamento\n");
+        printf("\n-----------------------------------ALTERAR-----------------------------------\n");
+        printf("Selecionou o departamento %s, numero %d \n\n", depart->info.name, depart->info.code);
+        printf("1 - Nome\n");
         printf("0 - Return\n");
 
         scanf("%d", &input);
@@ -35,8 +47,66 @@ void departsMenu(ELEM_D **inicioDeparts)
         switch (input)
         {
         case 1:
-            inputDeparts(inicioDeparts);
+            printf("Introduza um novo nome\n");
+            fgets(newName, sizeof(newName), stdin);
+            newName[strcspn(newName, "\n")] = '\0';
+            strcpy(depart->info.name, newName);
+            writeChangesDeparts(*inicioDeparts);
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+void departsMenu(ELEM_D **inicioDeparts)
+{
+    int input, num;
+    do
+    {
+        printf("\n-----------------------------------DEPARTAMENTOS-----------------------------------\n");
+        printf("1 - Listar\n");
+        printf("2 - Adicionar\n");
+        printf("3 - Alterar\n");
+        printf("4 - Remover\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
             printDeparts(*inicioDeparts);
+            break;
+        case 2:
+            printDeparts(*inicioDeparts);
+            inputDeparts(inicioDeparts);
+            break;
+        case 3:
+            if (*inicioDeparts == NULL)
+            {
+                printf("Nenhum departamento criado\n");
+                break;
+            }
+            altDepartMenu(inicioDeparts);
+            break;
+        case 4:
+            if (*inicioDeparts == NULL)
+            {
+                printf("Nenhum departamento criado\n");
+                break;
+            }
+            printDeparts(*inicioDeparts);
+            printf("Introduza o numero do departamento\n");
+            scanf("%d", &num);
+            getchar();
+            if (eliminarDepart(inicioDeparts, num) == 0)
+            {
+                refreshDepartCodes(inicioDeparts);
+                writeChangesDeparts(*inicioDeparts);
+            }
             break;
         case 0:
             break;

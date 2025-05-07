@@ -4,7 +4,6 @@ typedef struct departements
 {
     char name[20];
     int code;
-    ELEM_E *inicioEquips;
 } DEPART;
 
 typedef struct elem_d
@@ -22,3 +21,11 @@ int departsRelease(ELEM_D **inicio);
 void printDeparts(ELEM_D *inicio);
 
 int registrarDeparts(DEPART equip, ELEM_D **inicio);
+
+int eliminarDepart(ELEM_D **inicio, int numero);
+
+ELEM_D *procurarDepart(ELEM_D **inicio, int numero);
+
+int writeChangesDeparts(ELEM_D *inicio);
+
+void refreshDepartCodes(ELEM_D **inicio);
