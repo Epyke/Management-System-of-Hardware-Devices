@@ -34,7 +34,7 @@ int verifNumSerie(ELEM_E *inicio, int num_serie)
     {
         if (aux->info.num_serie == num_serie)
         {
-            printf("Número de serie já usado, tente novamente\n");
+            printf("Número de serie ja usado, tente novamente\n");
             return 1;
         }
         aux = aux->seguinte;
@@ -159,10 +159,37 @@ int equipsRelease(ELEM_E **inicio)
 void printEquips(ELEM_E *inicio)
 {
     ELEM_E *aux = NULL;
-    printf("--------------------------------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("%-3d | %-31s | %-21s | %-3d | %-11s | %21s | %-3d", aux->info.id, aux->info.type, aux->info.brand, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+        printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
     }
-    printf("--------------------------------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+ELEM_E *procurarEquip(ELEM_E *inicio, int numero)
+{
+
+    ELEM_E *aux = NULL;
+    int found = 0;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.id == numero)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        return aux;
+    }
+    else
+    {
+        printf("Nenhum utilizador encontrado, tente novamente\n");
+        return NULL;
+    }
 }

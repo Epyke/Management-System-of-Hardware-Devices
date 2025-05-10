@@ -34,7 +34,7 @@ int verifDepartNum(ELEM_D *inicio, int num)
         }
         aux = aux->seguinte;
     }
-    printf("Número de departamento não encontrado\n");
+    printf("Numero de departamento nao encontrado\n");
     return 0;
 }
 
@@ -58,12 +58,12 @@ int VerificaNome(ELEM_D *inicio, char nome[])
     return 0;
 }
 
-ELEM_D *procurarDepart(ELEM_D **inicio, int numero)
+ELEM_D *procurarDepart(ELEM_D *inicio, int numero)
 {
 
-    ELEM_D *aux = NULL, *previous = NULL;
+    ELEM_D *aux = NULL;
     int found = 0;
-    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         if (aux->info.code == numero)
         {
@@ -242,10 +242,12 @@ void refreshDepartCodes(ELEM_D **inicio)
 void printDeparts(ELEM_D *inicio)
 {
     ELEM_D *aux = NULL;
-    printf("--------------------------------------------------------------------------------------------\n");
+    printf("------------------------------\n");
+    printf("%-20s | %-10s \n", "NOME", "ID");
+    printf("------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         printf("%-20s | %d \n", aux->info.name, aux->info.code);
     }
-    printf("--------------------------------------------------------------------------------------------\n");
+    printf("------------------------------\n");
 }

@@ -3,6 +3,7 @@ typedef struct equipe
     int id;
     char type[30];
     char brand[20];
+    char model[20];
     int num_serie;
     char date[11];
     char state[20];
@@ -16,6 +17,8 @@ typedef struct elem
 } ELEM_E;
 
 ELEM_E *importEquips();
+
+ELEM_E *procurarEquip(ELEM_E *inicio, int numero);
 
 int verifNumSerie(ELEM_E *inicio, int num_serie);
 

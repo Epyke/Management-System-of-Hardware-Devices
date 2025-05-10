@@ -19,13 +19,13 @@ int inputDeparts(ELEM_D **inicioDeparts)
     return 0;
 }
 
-void altDepartMenu(ELEM_D **inicioDeparts)
+void altDepartMenu(ELEM_D *inicioDeparts)
 {
     int input, target;
     char newName[20];
     ELEM_D *depart = NULL;
 
-    printDeparts(*inicioDeparts);
+    printDeparts(inicioDeparts);
     printf("Introduza o numero do departamento: ");
     scanf("%d", &target);
     getchar();
@@ -52,7 +52,7 @@ void altDepartMenu(ELEM_D **inicioDeparts)
             fgets(newName, sizeof(newName), stdin);
             newName[strcspn(newName, "\n")] = '\0';
             strcpy(depart->info.name, newName);
-            writeChangesDeparts(*inicioDeparts);
+            writeChangesDeparts(inicioDeparts);
             break;
         case 0:
             break;
@@ -76,13 +76,18 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     fgets(equip.brand, sizeof(equip.brand), stdin);
     equip.brand[strcspn(equip.brand, "\n")] = '\0';
 
-    while (verifNumSerie(*inicioEquips, equip.num_serie == 1))
-    {
-        printf("Introduza o número de serie\n");
-        scanf("%d", &equip.num_serie);
-    }
+    printf("Introduza o modelo do equipamento\n");
+    fgets(equip.model, sizeof(equip.model), stdin);
+    equip.model[strcspn(equip.model, "\n")] = '\0';
 
-    printf("Introduza a data\n");
+    do
+    {
+        printf("Introduza o numero de serie\n");
+        scanf("%d", &equip.num_serie);
+        getchar();
+    } while (verifNumSerie(*inicioEquips, equip.num_serie == 1));
+
+    printf("Introduza a data de aquisicao\n"); // Sistema de data, para mais tarde
     fgets(equip.date, sizeof(equip.date), stdin);
     equip.date[strcspn(equip.date, "\n")] = '\0';
 
@@ -90,13 +95,59 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     fgets(equip.state, sizeof(equip.state), stdin);
     equip.state[strcspn(equip.state, "\n")] = '\0';
 
-    printEquips(*inicioEquips);
-    while (verifDepartNum(inicioDeparts, equip.departement) == 0)
+    do
     {
+        printDeparts(inicioDeparts);
         printf("Associe o equipamento ao departamento\n");
-        scanf("%d", equip.departement);
-    }
+        scanf("%d", &equip.departement);
+        getchar();
+    } while (verifDepartNum(inicioDeparts, equip.departement) == 0);
+
     registrarEquips(equip, inicioEquips);
+}
+
+void altEquipMenu(ELEM_E *inicioEquips)
+{
+    int input, target;
+    char newName[20];
+    ELEM_E *equip = NULL;
+
+    printEquips(inicioEquips);
+    printf("Introduza o ID do equipamento: ");
+    scanf("%d", &target);
+    getchar();
+    equip = procurarEquip(inicioEquips, target);
+    if (equip == NULL)
+    {
+        return;
+    }
+
+    do
+    {
+        printf("\n-----------------------------------ALTERAR-----------------------------------\n");
+        printf("Selecionou o equipamento %s, %s, ID = %d \n\n", equip->info.model, equip->info.brand, equip->info.id);
+        printf("1 - Tipo\n");
+        printf("2 - Marca\n");
+        printf("3 - Modelo\n");
+        printf("4 - Numero de serie\n");
+        printf("5 - Data de aquisisao\n");
+        printf("6 - Estado\n");
+        printf("7 - Departamento\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
 }
 
 void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
@@ -124,12 +175,18 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
         switch (input)
         {
         case 1:
+            if (inicioEquips == NULL)
+            {
+                printf("Nenhum equipamento existente\n");
+                return;
+            }
             printEquips(*inicioEquips);
             break;
         case 2:
             inputEquips(inicioEquips, *inicioDeparts);
             break;
         case 3:
+
             break;
         case 4:
             break;
@@ -171,7 +228,7 @@ void departsMenu(ELEM_D **inicioDeparts)
                 printf("Nenhum departamento criado\n");
                 break;
             }
-            altDepartMenu(inicioDeparts);
+            altDepartMenu(*inicioDeparts);
             break;
         case 4:
             if (*inicioDeparts == NULL)

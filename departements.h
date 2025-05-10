@@ -25,7 +25,7 @@ int registrarDeparts(DEPART equip, ELEM_D **inicio);
 
 int eliminarDepart(ELEM_D **inicio, int numero);
 
-ELEM_D *procurarDepart(ELEM_D **inicio, int numero);
+ELEM_D *procurarDepart(ELEM_D *inicio, int numero);
 
 int writeChangesDeparts(ELEM_D *inicio);
 
