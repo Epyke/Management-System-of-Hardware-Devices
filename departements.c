@@ -22,6 +22,22 @@ int getDepartsNumb(ELEM_D *inicio)
     return count;
 }
 
+int verifDepartNum(ELEM_D *inicio, int num)
+{
+    ELEM_D *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (aux->info.code == num)
+        {
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+    printf("Número de departamento não encontrado\n");
+    return 0;
+}
+
 int VerificaNome(ELEM_D *inicio, char nome[])
 {
     if (inicio == NULL)

@@ -9,11 +9,11 @@
  * @param inicio Apontador para o inicio da lista ligada.
  * @return int Retorna 0 se for executado com sucesso, retorna -1 se occorer um erro na abertura d
  */
-int AdminSetup(ELEM_U *inicio)
+int AdminSetup(ELEM_U **inicio)
 {
     ELEM_U *aux = NULL;
 
-    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
     {
         if (strcmp(aux->info.username, "admin") == 0)
         {
@@ -36,7 +36,7 @@ int AdminSetup(ELEM_U *inicio)
     strcpy(user.password, "admin");
     user.state = 1;
     fwrite(&user, sizeof(USER), 1, fp);
-    insIniLista(&inicio, user);
+    insIniLista(inicio, user);
     fclose(fp);
     return 0;
 }

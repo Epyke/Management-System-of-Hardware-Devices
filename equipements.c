@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "equipements.h"
 
-int getDepartsNumb(ELEM_E *inicio)
+int getEquipsNumb(ELEM_E *inicio)
 {
     if (inicio == NULL)
     {
@@ -21,7 +21,29 @@ int getDepartsNumb(ELEM_E *inicio)
     return count;
 }
 
-int insIniLista(ELEM_E **inicio, EQUIPE info)
+int verifNumSerie(ELEM_E *inicio, int num_serie)
+{
+    if (inicio == NULL)
+    {
+        return 0;
+    }
+
+    ELEM_E *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (aux->info.num_serie == num_serie)
+        {
+            printf("Número de serie já usado, tente novamente\n");
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+
+    return 0;
+}
+
+int insIniListaEquips(ELEM_E **inicio, EQUIPE info)
 {
     ELEM_E *new = NULL;
     new = (ELEM_E *)calloc(1, sizeof(ELEM_E));
@@ -66,7 +88,7 @@ ELEM_E *importEquips()
         res = fread(&equip, sizeof(EQUIPE), 1, fp);
         if (res == 1)
         {
-            insIniLista(&inicio, equip);
+            insIniListaEquips(&inicio, equip);
         }
         else
         {
@@ -78,7 +100,7 @@ ELEM_E *importEquips()
     return inicio;
 }
 
-int writeChanges(ELEM_E *inicio)
+int writeChangesEquips(ELEM_E *inicio)
 {
     FILE *fp = fopen("equips.bat", "wb");
 
@@ -98,7 +120,7 @@ int writeChanges(ELEM_E *inicio)
     fclose(fp);
 }
 
-int registrarEquips(EQUIPE equip, ELEM_E *inicio)
+int registrarEquips(EQUIPE equip, ELEM_E **inicio)
 {
 
     FILE *fp = fopen("equips.bat", "ab");
@@ -110,7 +132,7 @@ int registrarEquips(EQUIPE equip, ELEM_E *inicio)
     }
 
     fwrite(&equip, sizeof(EQUIPE), 1, fp);
-    insIniLista(&inicio, equip);
+    insIniListaEquips(inicio, equip);
     printf("Equipamento criado com sucesso\n");
     fclose(fp);
     return 0;

@@ -12,7 +12,7 @@ typedef struct elem_u
     struct elem_u *seguinte;
 } ELEM_U;
 
-int AdminSetup(ELEM_U *inicio);
+int AdminSetup(ELEM_U **inicio);
 
 int AdminPasswordChange(ELEM_U *inicio);
 

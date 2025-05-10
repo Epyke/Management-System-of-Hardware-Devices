@@ -1,4 +1,3 @@
-#include "equipements.h"
 
 typedef struct departements
 {
@@ -11,6 +10,8 @@ typedef struct elem_d
     DEPART info;
     struct elem_d *seguinte;
 } ELEM_D;
+
+int verifDepartNum(ELEM_D *inicio, int num);
 
 int getDepartsNumb(ELEM_D *incio);
 

@@ -62,35 +62,53 @@ void altDepartMenu(ELEM_D **inicioDeparts)
     } while (input != 0);
 }
 
-void inputEquips(ELEM_E **inicioEquips)
+void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     EQUIPE equip;
-    int id = getEquipsNumb();
+    int id = getEquipsNumb(*inicioEquips);
     id++;
     equip.id = id;
     printf("Introduza o tipo de equipamento\n");
     fgets(equip.type, sizeof(equip.type), stdin);
     equip.type[strcspn(equip.type, "\n")] = '\0';
 
+    printf("Introduza a marca do equipamento\n");
     fgets(equip.brand, sizeof(equip.brand), stdin);
     equip.brand[strcspn(equip.brand, "\n")] = '\0';
 
-    scanf("%d", &equip.num_serie);
+    while (verifNumSerie(*inicioEquips, equip.num_serie == 1))
+    {
+        printf("Introduza o número de serie\n");
+        scanf("%d", &equip.num_serie);
+    }
 
+    printf("Introduza a data\n");
     fgets(equip.date, sizeof(equip.date), stdin);
     equip.date[strcspn(equip.date, "\n")] = '\0';
 
+    printf("Introduza o estado do equipamento\n");
     fgets(equip.state, sizeof(equip.state), stdin);
     equip.state[strcspn(equip.state, "\n")] = '\0';
 
     printEquips(*inicioEquips);
-    scanf("%d", equip.departement);
-    registrarEquips(equip, *inicioEquips);
+    while (verifDepartNum(inicioDeparts, equip.departement) == 0)
+    {
+        printf("Associe o equipamento ao departamento\n");
+        scanf("%d", equip.departement);
+    }
+    registrarEquips(equip, inicioEquips);
 }
 
-void equipsMenu(ELEM_E **inicioEquips)
+void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
 {
     int input, num;
+
+    if (*inicioDeparts == NULL)
+    {
+        printf("Nenhum departamento existente\n");
+        return;
+    }
+
     do
     {
         printf("\n-----------------------------------EQUIPAMENTOS-----------------------------------\n");
@@ -109,8 +127,7 @@ void equipsMenu(ELEM_E **inicioEquips)
             printEquips(*inicioEquips);
             break;
         case 2:
-            printEquips(*inicioEquips);
-            inputEquips(inicioEquips);
+            inputEquips(inicioEquips, *inicioDeparts);
             break;
         case 3:
             break;
@@ -213,7 +230,8 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 departsMenu(inicioDepart);
                 break;
             case 3:
-
+                equipsMenu(inicioEquip, inicioDepart);
+                break;
             case 9:
                 resetAdmin(inicioUser);
                 break;
@@ -311,7 +329,7 @@ int main(int argc, char const *argv[])
     inicioEquips = importEquips();
     inicioUser = importUsers();
     inicioDepart = importDeparts();
-    AdminSetup(inicioUser);
+    AdminSetup(&inicioUser);
     do
     {
         res = loginMenu(&inicioUser, &inicioDepart, &inicioEquips);
