@@ -169,6 +169,33 @@ void printEquips(ELEM_E *inicio)
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
+int eliminarEquip(ELEM_E **inicio, int numero)
+{
+    ELEM_E *aux = NULL, *previous = NULL;
+    aux = *inicio;
+    while (aux != NULL)
+    {
+        if (aux->info.id == numero)
+        {
+            if (previous == NULL)
+            {
+                *inicio = aux->seguinte;
+            }
+            else
+            {
+                previous->seguinte = aux->seguinte;
+            }
+            free(aux);
+            return 0;
+        }
+        previous = aux;
+        aux = aux->seguinte;
+    }
+
+    printf("Nenhum resultado encontrado, tente novamente\n");
+    return -1;
+}
+
 ELEM_E *procurarEquip(ELEM_E *inicio, int numero)
 {
 
@@ -189,7 +216,17 @@ ELEM_E *procurarEquip(ELEM_E *inicio, int numero)
     }
     else
     {
-        printf("Nenhum utilizador encontrado, tente novamente\n");
+        printf("Nenhum equipamento encontrado, tente novamente\n");
         return NULL;
+    }
+}
+
+void refreshEquipCodes(ELEM_E *inicio)
+{
+    int count = 1;
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        aux->info.id = count++;
     }
 }

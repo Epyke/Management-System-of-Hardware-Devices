@@ -33,3 +33,7 @@ void printEquips(ELEM_E *inicio);
 int insIniListaEquips(ELEM_E **inicio, EQUIPE info);
 
 int writeChangesEquips(ELEM_E *inicio);
+
+int eliminarEquip(ELEM_E **inicio, int numero);
+
+void refreshEquipCodes(ELEM_E *inicio);

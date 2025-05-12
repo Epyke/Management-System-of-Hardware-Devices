@@ -106,7 +106,7 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     registrarEquips(equip, inicioEquips);
 }
 
-void altEquipMenu(ELEM_E *inicioEquips)
+void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
 {
     int input, target;
     char newName[20];
@@ -141,20 +141,59 @@ void altEquipMenu(ELEM_E *inicioEquips)
         switch (input)
         {
         case 1:
+            printf("Introduza o novo tipo de equipamento\n");
+            fgets(equip->info.type, sizeof(equip->info.type), stdin);
+            equip->info.type[strcspn(equip->info.type, "\n")] = '\0';
             break;
+        case 2:
+            printf("Introduza a nova marca do equipamento\n");
+            fgets(equip->info.brand, sizeof(equip->info.brand), stdin);
+            equip->info.brand[strcspn(equip->info.brand, "\n")] = '\0';
+            break;
+        case 3:
+            printf("Introduza o novo modelo do equipamento\n");
+            fgets(equip->info.model, sizeof(equip->info.model), stdin);
+            equip->info.model[strcspn(equip->info.model, "\n")] = '\0';
+            break;
+        case 4:
+            do
+            {
+                printf("Introduza o novo número de serie\n");
+                scanf("%d", &equip->info.num_serie);
+                getchar();
+            } while (verifNumSerie(inicioEquips, equip->info.num_serie == 1));
+            break;
+        case 5:
+            printf("Introduza a nova data de aquisição\n");
+            fgets(equip->info.date, sizeof(equip->info.date), stdin);
+            equip->info.date[strcspn(equip->info.date, "\n")] = '\0';
+            break;
+        case 6:
+            printf("Introduza o novo estado do equipamento\n");
+            fgets(equip->info.state, sizeof(equip->info.state), stdin);
+            equip->info.state[strcspn(equip->info.state, "\n")] = '\0';
+        case 7:
+            do
+            {
+                printDeparts(inicioDeparts);
+                printf("Introduza o novo departamento\n");
+                scanf("%d", &equip->info.departement);
+                getchar();
+            } while (verifDepartNum(inicioDeparts, equip->info.departement) == 0);
         case 0:
             break;
         default:
             printf("\nValor introduzido incorreto, tente novamente\n\n");
         }
     } while (input != 0);
+    writeChangesEquips(inicioEquips);
 }
 
-void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
+void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     int input, num;
 
-    if (*inicioDeparts == NULL)
+    if (inicioDeparts == NULL)
     {
         printf("Nenhum departamento existente\n");
         return;
@@ -183,12 +222,35 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
             printEquips(*inicioEquips);
             break;
         case 2:
-            inputEquips(inicioEquips, *inicioDeparts);
+            inputEquips(inicioEquips, inicioDeparts);
             break;
         case 3:
+            if (inicioEquips == NULL)
+            {
+                printf("Nenhum equipamento existente\n");
+                return;
+            }
 
+            altEquipMenu(*inicioEquips, inicioDeparts);
             break;
         case 4:
+            if (inicioEquips == NULL)
+            {
+                printf("Nenhum equipamento existente\n");
+                return;
+            }
+            printEquips(*inicioEquips);
+            scanf("%d", &num);
+            getchar();
+            int numb_equips = getEquipsNumb(*inicioEquips);
+            if (eliminarEquip(inicioEquips, num) == 0)
+            {
+                if (num != numb_equips)
+                {
+                    refreshEquipCodes(*inicioEquips);
+                }
+                writeChangesEquips(*inicioEquips);
+            }
             break;
         case 0:
             break;
@@ -198,7 +260,7 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D **inicioDeparts)
     } while (input != 0);
 }
 
-void departsMenu(ELEM_D **inicioDeparts)
+void departsMenu(ELEM_D **inicioDeparts, ELEM_E *inicioEquips)
 {
     int input, num;
     do
@@ -216,6 +278,11 @@ void departsMenu(ELEM_D **inicioDeparts)
         switch (input)
         {
         case 1:
+            if (*inicioDeparts == NULL)
+            {
+                printf("Nenhum departamento criado\n");
+                break;
+            }
             printDeparts(*inicioDeparts);
             break;
         case 2:
@@ -240,9 +307,15 @@ void departsMenu(ELEM_D **inicioDeparts)
             printf("Introduza o numero do departamento\n");
             scanf("%d", &num);
             getchar();
+            int num_departs = getDepartsNumb(*inicioDeparts);
             if (eliminarDepart(inicioDeparts, num) == 0)
             {
-                refreshDepartCodes(inicioDeparts);
+                if (num != num_departs)
+                {
+                    refreshDepartCodes(*inicioDeparts);
+                    refreshEquipCodes(inicioEquips);
+                    writeChangesEquips(inicioEquips);
+                }
                 writeChangesDeparts(*inicioDeparts);
             }
             break;
@@ -284,10 +357,10 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 ativarUtilizadores(inicioUser);
                 break;
             case 2:
-                departsMenu(inicioDepart);
+                departsMenu(inicioDepart, *inicioEquip);
                 break;
             case 3:
-                equipsMenu(inicioEquip, inicioDepart);
+                equipsMenu(inicioEquip, *inicioDepart);
                 break;
             case 9:
                 resetAdmin(inicioUser);

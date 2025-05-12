@@ -229,11 +229,11 @@ int departsRelease(ELEM_D **inicio)
     *inicio = NULL;
 }
 
-void refreshDepartCodes(ELEM_D **inicio)
+void refreshDepartCodes(ELEM_D *inicio)
 {
     int count = 1;
     ELEM_D *aux = NULL;
-    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         aux->info.code = count++;
     }

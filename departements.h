@@ -29,4 +29,4 @@ ELEM_D *procurarDepart(ELEM_D *inicio, int numero);
 
 int writeChangesDeparts(ELEM_D *inicio);
 
-void refreshDepartCodes(ELEM_D **inicio);
+void refreshDepartCodes(ELEM_D *inicio);
