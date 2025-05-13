@@ -62,6 +62,80 @@ void altDepartMenu(ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+void filtrarMenu(ELEM_E *inicioEquips)
+{
+    int input, dep;
+    char str[20];
+    do
+    {
+        printf("\n-----------------------------------FILTRAR-----------------------------------\n");
+        printf("1 - Estado\n");
+        printf("2 - Tipo\n");
+        printf("3 - Departamento\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
+            printf("Introduza um estado\n");
+            fgets(str, sizeof(str), stdin);
+            str[strcspn(str, "\n")] = '\0';
+            filterEquipsState(inicioEquips, str);
+            break;
+        case 2:
+            printf("Introduza um tipo de equipamento\n");
+            fgets(str, sizeof(str), stdin);
+            str[strcspn(str, "\n")] = '\0';
+            filterEquipsType(inicioEquips, str);
+            break;
+        case 3:
+            printf("Introduza um departamento\n");
+            scanf("%d", &dep);
+            filterEquipsDeparts(inicioEquips, dep);
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+
+void listEquips(ELEM_E *inicioEquips)
+{
+    int input;
+    do
+    {
+        printf("\n-----------------------------------LISTAR-----------------------------------\n");
+        printf("1 - Listar por mais recente\n");
+        printf("2 - Filtrar\n");
+        printf("3 - Ordenar\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
+            printEquips(inicioEquips);
+            break;
+        case 2:
+            filtrarMenu(inicioEquips);
+            break;
+        case 3:
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+
 void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     EQUIPE equip;
@@ -219,7 +293,7 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
                 printf("Nenhum equipamento existente\n");
                 return;
             }
-            printEquips(*inicioEquips);
+            listEquips(*inicioEquips);
             break;
         case 2:
             inputEquips(inicioEquips, inicioDeparts);
@@ -313,7 +387,7 @@ void departsMenu(ELEM_D **inicioDeparts, ELEM_E *inicioEquips)
                 if (num != num_departs)
                 {
                     refreshDepartCodes(*inicioDeparts);
-                    refreshEquipCodes(inicioEquips);
+                    refreshEquipDeparts(inicioEquips, num);
                     writeChangesEquips(inicioEquips);
                 }
                 writeChangesDeparts(*inicioDeparts);

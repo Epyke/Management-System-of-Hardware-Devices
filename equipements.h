@@ -37,3 +37,15 @@ int writeChangesEquips(ELEM_E *inicio);
 int eliminarEquip(ELEM_E **inicio, int numero);
 
 void refreshEquipCodes(ELEM_E *inicio);
+
+void refreshEquipDeparts(ELEM_E *inicio, int num);
+
+int findExistingStrState(ELEM_E *inicio, char str[]);
+
+int findExistingStrType(ELEM_E *inicio, char str[]);
+
+int filterEquipsType(ELEM_E *inicio, char type[]);
+
+int filterEquipsState(ELEM_E *inicio, char state[]);
+
+int filterEquipsDeparts(ELEM_E *inicio, int num);

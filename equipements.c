@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "equipements.h"
 
 int getEquipsNumb(ELEM_E *inicio)
@@ -229,4 +230,117 @@ void refreshEquipCodes(ELEM_E *inicio)
     {
         aux->info.id = count++;
     }
+}
+
+void refreshEquipDeparts(ELEM_E *inicio, int num)
+{
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.departement > num)
+        {
+            aux->info.departement -= 1;
+        }
+    }
+}
+
+int findExistingStrState(ELEM_E *inicio, char str[])
+{
+    ELEM_E *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strstr(aux->info.state, str) != NULL)
+        {
+            return 0;
+        }
+        aux = aux->seguinte;
+    }
+    return -1;
+}
+
+int findExistingStrType(ELEM_E *inicio, char str[])
+{
+    ELEM_E *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strstr(aux->info.type, str) != NULL)
+        {
+            return 0;
+        }
+        aux = aux->seguinte;
+    }
+    return -1;
+}
+
+int filterEquipsType(ELEM_E *inicio, char type[])
+{
+    if (findExistingStrType(inicio, type) != 0)
+    {
+        printf("Nenhum resultado encontrado\n");
+        return -1;
+    }
+
+    ELEM_E *aux = NULL;
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (strstr(aux->info.type, type) != NULL)
+        {
+            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+        }
+    }
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    return 0;
+}
+
+int filterEquipsState(ELEM_E *inicio, char state[])
+{
+
+    if (findExistingStrState(inicio, state) != 0)
+    {
+        printf("Nenhum resultado encontrado\n");
+        return -1;
+    }
+
+    ELEM_E *aux = NULL;
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (strstr(aux->info.state, state) != NULL)
+        {
+            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+        }
+    }
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    return 0;
+}
+
+int filterEquipsDeparts(ELEM_E *inicio, int num)
+{
+
+    if (procurarEquip(inicio, num) == NULL)
+    {
+        printf("Nenhum departamento encontrado\n");
+        return -1;
+    }
+
+    ELEM_E *aux = NULL;
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.departement == num)
+        {
+            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+        }
+    }
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    return 0;
 }
