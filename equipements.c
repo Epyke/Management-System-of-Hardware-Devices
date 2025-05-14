@@ -344,3 +344,12 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     return 0;
 }
+
+ELEM_E ordenar_tipo(ELEM_E *inicioEquips){
+    ELEM_E *inicioOrdenado;
+
+    ELEM_E *aux = NULL;
+    for(aux = inicioEquips; aux != NULL; aux = aux->seguinte){
+        
+    }
+}
