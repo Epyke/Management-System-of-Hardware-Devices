@@ -3,6 +3,8 @@
 #include <string.h>
 #include "equipements.h"
 
+#define EQUIPSFILE "data/equips.dat"
+
 int getEquipsNumb(ELEM_E *inicio)
 {
     if (inicio == NULL)
@@ -72,7 +74,7 @@ int insIniListaEquips(ELEM_E **inicio, EQUIPE info)
 
 ELEM_E *importEquips()
 {
-    FILE *fp = fopen("equips.bat", "rb");
+    FILE *fp = fopen(EQUIPSFILE, "rb");
 
     if (fp == NULL)
     {
@@ -103,7 +105,7 @@ ELEM_E *importEquips()
 
 int writeChangesEquips(ELEM_E *inicio)
 {
-    FILE *fp = fopen("equips.bat", "wb");
+    FILE *fp = fopen(EQUIPSFILE, "wb");
 
     if (fp == NULL)
     {
@@ -124,7 +126,7 @@ int writeChangesEquips(ELEM_E *inicio)
 int registrarEquips(EQUIPE equip, ELEM_E **inicio)
 {
 
-    FILE *fp = fopen("equips.bat", "ab");
+    FILE *fp = fopen(EQUIPSFILE, "ab");
 
     if (fp == NULL)
     {
@@ -345,6 +347,7 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     return 0;
 }
 
+/* 
 ELEM_E ordenar_tipo(ELEM_E *inicioEquips){
     ELEM_E *inicioOrdenado;
 
@@ -353,3 +356,4 @@ ELEM_E ordenar_tipo(ELEM_E *inicioEquips){
         
     }
 }
+*/

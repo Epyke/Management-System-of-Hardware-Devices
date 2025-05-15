@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "users.h"
+
+#define USERFILE "data/users.dat"
+
 /**
  * @brief Função que verifica se existe um perfil admin, na lista ligada cujo inicio é fornecido como parâmetro e no ficheiro users.bat.
  *  Se não existir nenhum perfil admin, a função insere um novo perfil admin com a password admin, na lista ligada e no ficheiro users.bat.
@@ -22,7 +25,7 @@ int AdminSetup(ELEM_U **inicio)
     }
 
     // Não existe perfil admin -> criação de um novo perfil
-    FILE *fp = fopen("users.bat", "ab");
+    FILE *fp = fopen(USERFILE, "ab");
 
     if (fp == NULL)
     {
@@ -43,7 +46,7 @@ int AdminSetup(ELEM_U **inicio)
 
 int writeChanges(ELEM_U *inicio)
 {
-    FILE *fp = fopen("users.bat", "wb");
+    FILE *fp = fopen(USERFILE, "wb");
 
     if (fp == NULL)
     {
@@ -138,7 +141,7 @@ int insIniLista(ELEM_U **inicio, USER info)
 
 ELEM_U *importUsers()
 {
-    FILE *fp = fopen("users.bat", "rb");
+    FILE *fp = fopen(USERFILE, "rb");
 
     if (fp == NULL)
     {
@@ -188,7 +191,7 @@ int usersRelease(ELEM_U **inicio)
 int registrar(char username[20], char password[20], ELEM_U *inicio)
 {
 
-    FILE *fp = fopen("users.bat", "ab");
+    FILE *fp = fopen(USERFILE, "ab");
 
     if (fp == NULL)
     {
