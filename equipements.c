@@ -167,7 +167,18 @@ void printEquips(ELEM_E *inicio)
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+        printf(
+            "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+            aux->info.id,
+            aux->info.type,
+            aux->info.brand,
+            aux->info.model,
+            aux->info.num_serie,
+            aux->info.date.day,
+            aux->info.date.month,
+            aux->info.date.year,
+            aux->info.state,
+            aux->info.departement);
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
@@ -292,7 +303,18 @@ int filterEquipsType(ELEM_E *inicio, char type[])
     {
         if (strstr(aux->info.type, type) != NULL)
         {
-            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -316,7 +338,18 @@ int filterEquipsState(ELEM_E *inicio, char state[])
     {
         if (strstr(aux->info.state, state) != NULL)
         {
-            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -340,20 +373,53 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     {
         if (aux->info.departement == num)
         {
-            printf("%-3d | %-31s | %-21s | %-21s | %-20d | %-11s | %-21s | %-3d \n", aux->info.id, aux->info.type, aux->info.brand, aux->info.model, aux->info.num_serie, aux->info.date, aux->info.state, aux->info.departement);
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     return 0;
 }
 
-/* 
-ELEM_E ordenar_tipo(ELEM_E *inicioEquips){
-    ELEM_E *inicioOrdenado;
-
-    ELEM_E *aux = NULL;
-    for(aux = inicioEquips; aux != NULL; aux = aux->seguinte){
-        
-    }
+/*
+void quicksort(int v[], int left, int right)
+{
+    int i, j, p = 0, aux = 0;
+    i = left;
+    j = right;
+    p = v[(left + right) / 2];
+    do
+    {
+        while (v[i] < p && i < right)
+        {
+            i++;
+        }
+        while (p < v[j] && j > left)
+        {
+            j--;
+        }
+        if (i <= j)
+        { // troca
+            aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+            i++;
+            j--;
+        }
+    } while (i <= j);
+    if (left < j)
+        quicksort(v, left, j);
+    if (i < right)
+        quicksort(v, i, right);
 }
-*/
+        */

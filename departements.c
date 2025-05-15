@@ -3,6 +3,8 @@
 #include <string.h>
 #include "departements.h"
 
+#define DEPARTSFILE "data/departements.dat"
+
 int getDepartsNumb(ELEM_D *inicio)
 {
     if (inicio == NULL)
@@ -138,7 +140,7 @@ int insIniListaDeparts(ELEM_D **inicio, DEPART info)
 
 ELEM_D *importDeparts()
 {
-    FILE *fp = fopen("departements.bat", "rb");
+    FILE *fp = fopen(DEPARTSFILE, "rb");
 
     if (fp == NULL)
     {
@@ -169,7 +171,7 @@ ELEM_D *importDeparts()
 
 int writeChangesDeparts(ELEM_D *inicio)
 {
-    FILE *fp = fopen("departements.bat", "wb");
+    FILE *fp = fopen(DEPARTSFILE, "wb");
 
     if (fp == NULL)
     {
@@ -196,7 +198,7 @@ int registrarDeparts(DEPART info, ELEM_D **inicio)
         return -1;
     }
 
-    FILE *fp = fopen("departements.bat", "ab");
+    FILE *fp = fopen(DEPARTSFILE, "ab");
 
     if (fp == NULL)
     {

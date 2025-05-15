@@ -136,6 +136,69 @@ void listEquips(ELEM_E *inicioEquips)
     } while (input != 0);
 }
 
+int verifYear(int year)
+{
+    if (year < 1900 || year > 2026)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int verifMonth(int month)
+{
+    if (month < 1 || month > 12)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int verifDay(int day, int month, int year)
+{
+    if ((day < 1 || day > 31))
+    {
+        return 0;
+    }
+    else if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+    {
+        return 0;
+    }
+
+    if (month == 2 && (((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)) && day > 29)
+    {
+        return 0;
+    }
+    else if (month == 2 && day > 28)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int equipsDateSystem(DATE date)
+{
+    if (!verifYear(date.year))
+    {
+        printf("Erro relativamente ao ano introduzido\n");
+        return 0;
+    }
+
+    if (!verifMonth(date.month))
+    {
+        printf("Erro relativamente ao mes introduzido\n");
+        return 0;
+    }
+
+    if (!verifDay(date.day, date.month, date.year))
+    {
+        printf("Erro relativamente ao dia introduzido\n");
+        return 0;
+    }
+
+    return 1;
+}
+
 void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     EQUIPE equip;
@@ -161,9 +224,28 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
         getchar();
     } while (verifNumSerie(*inicioEquips, equip.num_serie == 1));
 
-    printf("Introduza a data de aquisicao\n"); // Sistema de data, para mais tarde
-    fgets(equip.date, sizeof(equip.date), stdin);
-    equip.date[strcspn(equip.date, "\n")] = '\0';
+    int res;
+    do
+    {
+        printf("\nIntroduza a data de aquisicao no formate DD/MM/YYYY\n"); // Sistema de data, para mais tarde
+        char inputStr[11];
+        fgets(inputStr, sizeof(inputStr), stdin);
+        inputStr[strcspn(inputStr, "\n")] = '\0';
+        res = sscanf(inputStr, "%d/%d/%d", &equip.date.day, &equip.date.month, &equip.date.year);
+
+        if (res != 3)
+        {
+            printf("Erro relativamente ao formato introduzido\n");
+            continue;
+        }
+
+        if (!equipsDateSystem(equip.date))
+        {
+            continue;
+        }
+
+        break;
+    } while (1);
 
     printf("Introduza o estado do equipamento\n");
     fgets(equip.state, sizeof(equip.state), stdin);
@@ -238,9 +320,27 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
             } while (verifNumSerie(inicioEquips, equip->info.num_serie == 1));
             break;
         case 5:
-            printf("Introduza a nova data de aquisição\n");
-            fgets(equip->info.date, sizeof(equip->info.date), stdin);
-            equip->info.date[strcspn(equip->info.date, "\n")] = '\0';
+            int res;
+            do
+            {
+                printf("\nIntroduza a nova data de aquisicao no formate DD/MM/YYYY\n");
+                char inputStr[11];
+                fgets(inputStr, sizeof(inputStr), stdin);
+                inputStr[strcspn(inputStr, "\n")] = '\0';
+                res = sscanf(inputStr, "%d/%d/%d", &equip->info.date.day, &equip->info.date.month, &equip->info.date.year);
+
+                if (res != 3)
+                {
+                    printf("Erro relativamente ao formato introduzido\n");
+                    continue;
+                }
+
+                if (!equipsDateSystem(equip->info.date))
+                {
+                    continue;
+                }
+                break;
+            } while (1);
             break;
         case 6:
             printf("Introduza o novo estado do equipamento\n");

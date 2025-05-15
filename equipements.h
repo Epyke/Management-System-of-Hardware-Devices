@@ -1,3 +1,8 @@
+typedef struct date
+{
+    int day, month, year;
+} DATE;
+
 typedef struct equipe
 {
     int id;
@@ -5,7 +10,7 @@ typedef struct equipe
     char brand[20];
     char model[20];
     int num_serie;
-    char date[11];
+    DATE date;
     char state[20];
     int departement;
 } EQUIPE;
