@@ -210,6 +210,61 @@ int eliminarEquip(ELEM_E **inicio, int numero)
     return -1;
 }
 
+int RemoverEquipsDepartsNum(ELEM_E **inicio, int num)
+{
+    ELEM_E *aux = NULL, *previous = NULL, *temp = NULL;
+    aux = *inicio;
+    int removeCount = 0;
+    while (aux != NULL)
+    {
+        if (aux->info.departement == num)
+        {
+            temp = aux;
+            if (previous == NULL)
+            {
+                *inicio = aux->seguinte;
+            }
+            else
+            {
+                previous->seguinte = aux->seguinte;
+            }
+            aux = aux->seguinte;
+            free(temp);
+            removeCount++;
+        }
+        else
+        {
+            previous = aux;
+            aux = aux->seguinte;
+        }
+    }
+    return removeCount;
+}
+
+ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num)
+{
+    ELEM_E *aux = NULL;
+    int found = 0;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.departement == num)
+        {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        return aux;
+    }
+    else
+    {
+        printf("Nenhum equipamento encontrado, tente novamente\n");
+        return NULL;
+    }
+}
+
 ELEM_E *procurarEquip(ELEM_E *inicio, int numero)
 {
 
@@ -359,7 +414,7 @@ int filterEquipsState(ELEM_E *inicio, char state[])
 int filterEquipsDeparts(ELEM_E *inicio, int num)
 {
 
-    if (procurarEquip(inicio, num) == NULL)
+    if (procurarEquipDeparts(inicio, num) == NULL)
     {
         printf("Nenhum departamento encontrado\n");
         return -1;
@@ -391,35 +446,163 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     return 0;
 }
 
-/*
-void quicksort(int v[], int left, int right)
+// Function to split the singly linked list into two halves
+ELEM_E *split(ELEM_E *inicioEquips)
 {
-    int i, j, p = 0, aux = 0;
-    i = left;
-    j = right;
-    p = v[(left + right) / 2];
-    do
+    ELEM_E *fast = inicioEquips;
+    ELEM_E *slow = inicioEquips;
+
+    // Move fast pointer two steps and slow pointer
+    // one step until fast reaches the end
+    while (fast != NULL && fast->seguinte != NULL)
     {
-        while (v[i] < p && i < right)
+        fast = fast->seguinte->seguinte;
+        if (fast != NULL)
         {
-            i++;
+            slow = slow->seguinte;
         }
-        while (p < v[j] && j > left)
-        {
-            j--;
-        }
-        if (i <= j)
-        { // troca
-            aux = v[i];
-            v[i] = v[j];
-            v[j] = aux;
-            i++;
-            j--;
-        }
-    } while (i <= j);
-    if (left < j)
-        quicksort(v, left, j);
-    if (i < right)
-        quicksort(v, i, right);
+    }
+
+    // Split the list into two halves
+    ELEM_E *temp = slow->seguinte;
+    slow->seguinte = NULL;
+    return temp;
 }
-        */
+
+// Function to merge two sorted singly linked lists
+ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
+{
+
+    // If either list is empty, return the other list
+    if (first == NULL)
+        return second;
+    if (second == NULL)
+        return first;
+
+    switch (num)
+    {
+    case 1:
+        if (first->info.id <= second->info.id)
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else
+        {
+            // Recursively merge the rest of the lists
+            // and link the result to the current node
+            second->seguinte = merge(first, second->seguinte, num);
+            return second;
+        }
+        break;
+
+    case 2:
+        if (first->info.id >= second->info.id)
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else
+        {
+            // Recursively merge the rest of the lists
+            // and link the result to the current node
+            second->seguinte = merge(first, second->seguinte, num);
+            return second;
+        }
+        break;
+
+    case 3:
+        if (first->info.date.year > second->info.date.year)
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else if ((first->info.date.year == second->info.date.year) && (first->info.date.month > second->info.date.month))
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else if ((first->info.date.year == second->info.date.year) && (first->info.date.month == second->info.date.month) && (first->info.date.day > second->info.date.day))
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else
+        {
+            // Recursively merge the rest of the lists
+            // and link the result to the current node
+            second->seguinte = merge(first, second->seguinte, num);
+            return second;
+        }
+        break;
+
+    case 4:
+        if (strcmp(first->info.state, second->info.state) <= 0)
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else
+        {
+            // Recursively merge the rest of the lists
+            // and link the result to the current node
+            second->seguinte = merge(first, second->seguinte, num);
+            return second;
+        }
+        break;
+
+    case 5:
+        if (strcmp(first->info.type, second->info.type) <= 0)
+        {
+            // Recursively merge the rest of the lists and
+            // link the result to the current node
+            first->seguinte = merge(first->seguinte, second, num);
+            return first;
+        }
+        else
+        {
+            // Recursively merge the rest of the lists
+            // and link the result to the current node
+            second->seguinte = merge(first, second->seguinte, num);
+            return second;
+        }
+        break;
+    default:
+        break;
+    }
+    // Pick the smaller value between first and second nodes
+}
+
+// Function to perform merge sort on a singly linked list
+ELEM_E *MergeSort(ELEM_E *inicioEquips, int num)
+{
+
+    // Base case: if the list is empty or has only one node,
+    // it's already sorted
+    if (inicioEquips == NULL || (inicioEquips)->seguinte == NULL)
+    {
+        return inicioEquips;
+    }
+
+    // Split the list into two halves
+    ELEM_E *segunda = split(inicioEquips);
+
+    // Recursively sort each half
+    inicioEquips = MergeSort(inicioEquips, num);
+    segunda = MergeSort(segunda, num);
+
+    // Merge the two sorted halves
+    return merge(inicioEquips, segunda, num);
+}

@@ -25,6 +25,8 @@ ELEM_E *importEquips();
 
 ELEM_E *procurarEquip(ELEM_E *inicio, int numero);
 
+ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num);
+
 int verifNumSerie(ELEM_E *inicio, int num_serie);
 
 int equipsRelease(ELEM_E **inicio);
@@ -41,6 +43,8 @@ int writeChangesEquips(ELEM_E *inicio);
 
 int eliminarEquip(ELEM_E **inicio, int numero);
 
+int RemoverEquipsDepartsNum(ELEM_E **inicio, int num);
+
 void refreshEquipCodes(ELEM_E *inicio);
 
 void refreshEquipDeparts(ELEM_E *inicio, int num);
@@ -54,3 +58,10 @@ int filterEquipsType(ELEM_E *inicio, char type[]);
 int filterEquipsState(ELEM_E *inicio, char state[]);
 
 int filterEquipsDeparts(ELEM_E *inicio, int num);
+
+// ordenar
+ELEM_E *split(ELEM_E *inicioEquips);
+
+ELEM_E *mergeEstado(ELEM_E *first, ELEM_E *second);
+
+ELEM_E *MergeSort(ELEM_E *inicioEquips, int num);

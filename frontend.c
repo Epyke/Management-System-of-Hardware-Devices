@@ -104,15 +104,43 @@ void filtrarMenu(ELEM_E *inicioEquips)
     } while (input != 0);
 }
 
-void listEquips(ELEM_E *inicioEquips)
+void OrdenarMenu(ELEM_E **inicioEquips)
+{
+    int input;
+    char str[20];
+    do
+    {
+        printf("\n-----------------------------------Ordenar-----------------------------------\n");
+        printf("1 - Criacao mais recente\n");
+        printf("2 - Criacao mais antiga\n");
+        printf("3 - Data de aquisicao mais recente\n");
+        printf("4 - Estado\n");
+        printf("5 - Tipo\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        if (input > 0 && input < 6)
+        {
+            *inicioEquips = MergeSort(*inicioEquips, input);
+            printEquips(*inicioEquips);
+        }
+        else if (input != 0)
+        {
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+
+void listEquips(ELEM_E **inicioEquips)
 {
     int input;
     do
     {
         printf("\n-----------------------------------LISTAR-----------------------------------\n");
-        printf("1 - Listar por mais recente\n");
+        printf("1 - Ordenar\n");
         printf("2 - Filtrar\n");
-        printf("3 - Ordenar\n");
         printf("0 - Return\n");
 
         scanf("%d", &input);
@@ -121,12 +149,10 @@ void listEquips(ELEM_E *inicioEquips)
         switch (input)
         {
         case 1:
-            printEquips(inicioEquips);
+            OrdenarMenu(inicioEquips);
             break;
         case 2:
-            filtrarMenu(inicioEquips);
-            break;
-        case 3:
+            filtrarMenu(*inicioEquips);
             break;
         case 0:
             break;
@@ -232,7 +258,7 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
         fgets(inputStr, sizeof(inputStr), stdin);
         inputStr[strcspn(inputStr, "\n")] = '\0';
         res = sscanf(inputStr, "%d/%d/%d", &equip.date.day, &equip.date.month, &equip.date.year);
-
+        getchar();
         if (res != 3)
         {
             printf("Erro relativamente ao formato introduzido\n");
@@ -393,7 +419,7 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
                 printf("Nenhum equipamento existente\n");
                 return;
             }
-            listEquips(*inicioEquips);
+            listEquips(inicioEquips);
             break;
         case 2:
             inputEquips(inicioEquips, inicioDeparts);
@@ -434,7 +460,7 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
-void departsMenu(ELEM_D **inicioDeparts, ELEM_E *inicioEquips)
+void departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
 {
     int input, num;
     do
@@ -482,15 +508,38 @@ void departsMenu(ELEM_D **inicioDeparts, ELEM_E *inicioEquips)
             scanf("%d", &num);
             getchar();
             int num_departs = getDepartsNumb(*inicioDeparts);
+
+            if (procurarEquipDeparts(*inicioEquips, num) != NULL)
+            {
+                printf("Este departamente possui equipamentos atribuidos, tem de elimina-los para concluir a operacao, deseja remove-los ?\n");
+                printf("Y/n\n");
+                char opc;
+                scanf("%c", &opc);
+                getchar();
+                if (opc == 'Y' || opc == 'y')
+                {
+                    int removedItems = RemoverEquipsDepartsNum(inicioEquips, num);
+                    printf("Removeu com sucesso %d equipamentos\n", removedItems);
+                    writeChangesEquips(*inicioEquips);
+                    refreshEquipCodes(*inicioEquips);
+                }
+                else
+                {
+                    printf("Operacao cancelada, devido a presenca de equipamentos no departamento escolhido\n");
+                    break;
+                }
+            }
+
             if (eliminarDepart(inicioDeparts, num) == 0)
             {
                 if (num != num_departs)
                 {
                     refreshDepartCodes(*inicioDeparts);
-                    refreshEquipDeparts(inicioEquips, num);
-                    writeChangesEquips(inicioEquips);
+                    refreshEquipDeparts(*inicioEquips, num);
+                    writeChangesEquips(*inicioEquips);
                 }
                 writeChangesDeparts(*inicioDeparts);
+                printf("Departamento removido com sucesso\n");
             }
             break;
         case 0:
@@ -531,7 +580,7 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 ativarUtilizadores(inicioUser);
                 break;
             case 2:
-                departsMenu(inicioDepart, *inicioEquip);
+                departsMenu(inicioDepart, inicioEquip);
                 break;
             case 3:
                 equipsMenu(inicioEquip, *inicioDepart);
