@@ -1,3 +1,4 @@
+
 typedef struct date
 {
     int day, month, year;
@@ -59,7 +60,12 @@ int filterEquipsState(ELEM_E *inicio, char state[]);
 
 int filterEquipsDeparts(ELEM_E *inicio, int num);
 
-// ordenar
+// Relatorio
+int escreverRelatorioDeparts(ELEM_E *inicioEquips, int num);
+
+int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[]);
+
+// Ordenar
 ELEM_E *split(ELEM_E *inicioEquips);
 
 ELEM_E *mergeEstado(ELEM_E *first, ELEM_E *second);

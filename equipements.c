@@ -318,13 +318,13 @@ int findExistingStrState(ELEM_E *inicio, char str[])
     aux = inicio;
     while (aux != NULL)
     {
-        if (strstr(aux->info.state, str) != NULL)
+        if (strcmp(aux->info.state, str) == 0)
         {
-            return 0;
+            return 1;
         }
         aux = aux->seguinte;
     }
-    return -1;
+    return 0;
 }
 
 int findExistingStrType(ELEM_E *inicio, char str[])
@@ -333,18 +333,18 @@ int findExistingStrType(ELEM_E *inicio, char str[])
     aux = inicio;
     while (aux != NULL)
     {
-        if (strstr(aux->info.type, str) != NULL)
+        if (strstr(aux->info.type, str) == 0)
         {
-            return 0;
+            return 1;
         }
         aux = aux->seguinte;
     }
-    return -1;
+    return 0;
 }
 
 int filterEquipsType(ELEM_E *inicio, char type[])
 {
-    if (findExistingStrType(inicio, type) != 0)
+    if (findExistingStrType(inicio, type) != 1)
     {
         printf("Nenhum resultado encontrado\n");
         return -1;
@@ -379,7 +379,7 @@ int filterEquipsType(ELEM_E *inicio, char type[])
 int filterEquipsState(ELEM_E *inicio, char state[])
 {
 
-    if (findExistingStrState(inicio, state) != 0)
+    if (findExistingStrState(inicio, state) != 1)
     {
         printf("Nenhum resultado encontrado\n");
         return -1;
@@ -416,7 +416,6 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
 
     if (procurarEquipDeparts(inicio, num) == NULL)
     {
-        printf("Nenhum departamento encontrado\n");
         return -1;
     }
 
@@ -605,4 +604,109 @@ ELEM_E *MergeSort(ELEM_E *inicioEquips, int num)
 
     // Merge the two sorted halves
     return merge(inicioEquips, segunda, num);
+}
+
+int escreverRelatorioDeparts(ELEM_E *inicioEquips, int num)
+{
+    ELEM_E *equipe = NULL;
+    equipe = procurarEquipDeparts(inicioEquips, num);
+    if (equipe == NULL)
+    {
+        return -1;
+    }
+    char name[50] = "Relatorios/Departs/Depart";
+    char ext[] = ".txt";
+    char departNum[2];
+    sprintf(departNum, "%d", equipe->info.departement);
+    strcat(name, departNum);
+    strcat(name, ext);
+    FILE *fp = NULL;
+    fp = fopen(name, "w");
+
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o ficheiro\n");
+        return -1;
+    }
+    fprintf(fp, "--------------------------------------------------------------------------RELATORIO--------------------------------------------------------------------------------------\n\n");
+    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(fp, "%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    ELEM_E *aux;
+    aux = inicioEquips;
+    while (aux != NULL)
+    {
+        if (aux->info.departement == num)
+        {
+            fprintf(fp, "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                    aux->info.id,
+                    aux->info.type,
+                    aux->info.brand,
+                    aux->info.model,
+                    aux->info.num_serie,
+                    aux->info.date.day,
+                    aux->info.date.month,
+                    aux->info.date.year,
+                    aux->info.state,
+                    aux->info.departement);
+        }
+
+        aux = aux->seguinte;
+    }
+    fclose(fp);
+    printf("Relatorio criado com sucesso\n");
+    return 0;
+}
+
+int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[])
+{
+
+    if (findExistingStrState(inicioEquips, state) != 1)
+    {
+        printf("Nenhum equipamento com o estado %s encontrado\n", state);
+        return -1;
+    }
+
+    char name[100] = "Relatorios/Estados/";
+    strcat(name, state);
+    char ext[] = ".txt";
+    strcat(name, ext);
+    FILE *fp = NULL;
+    fp = fopen(name, "w");
+
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o ficheiro\n");
+        return -1;
+    }
+    fprintf(fp, "--------------------------------------------------------------------------RELATORIO--------------------------------------------------------------------------------------\n\n");
+    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(fp, "%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    ELEM_E *aux;
+    aux = inicioEquips;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->info.state, state) == 0)
+        {
+            fprintf(fp, "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                    aux->info.id,
+                    aux->info.type,
+                    aux->info.brand,
+                    aux->info.model,
+                    aux->info.num_serie,
+                    aux->info.date.day,
+                    aux->info.date.month,
+                    aux->info.date.year,
+                    aux->info.state,
+                    aux->info.departement);
+        }
+
+        aux = aux->seguinte;
+    }
+    fclose(fp);
+    printf("Relatorio criado com sucesso\n");
+    return 0;
 }
