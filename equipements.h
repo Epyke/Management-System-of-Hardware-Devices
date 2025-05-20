@@ -38,6 +38,8 @@ int registrarEquips(EQUIPE equip, ELEM_E **inicio);
 
 void printEquips(ELEM_E *inicio);
 
+void printAlertas(ELEM_E *inicio);
+
 int insIniListaEquips(ELEM_E **inicio, EQUIPE info);
 
 int writeChangesEquips(ELEM_E *inicio);

@@ -489,9 +489,9 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
                 getchar();
                 if (equip->info.departement == previous)
                 {
-                    printf("O departamento escolhido, é o mesmo que anteriormente, tente novamente\n");
+                    printf("Mesmo departamento, tente novamente\n");
                 }
-            } while (verifDepartNum(inicioDeparts, equip->info.departement) == 0 && equip->info.departement == previous);
+            } while (verifDepartNum(inicioDeparts, equip->info.departement) == 0 || equip->info.departement == previous);
 
             ELEM_D *newDepart = NULL;
             newDepart = procurarDepart(inicioDeparts, equip->info.departement);
@@ -500,11 +500,15 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
             previousDepart = procurarDepart(inicioDeparts, previous);
 
             char str[200];
-            sprintf(str, "Equipamento: %s - %s - %s - id: %d / Transferencia de Departamento: %s ===> %s", equip->info.type, equip->info.brand, equip->info.model, equip->info.id, previousDepart->info.name, newDepart->info.name);
+            sprintf(str, "Transferencia de Departamento: %s ===> %s", previousDepart->info.name, newDepart->info.name);
 
             HISTORICO historico;
             strcpy(historico.tipo, "Movimentacao");
             strcpy(historico.desc, str);
+            strcpy(historico.equipTipo, equip->info.type);
+            strcpy(historico.brand, equip->info.brand);
+            strcpy(historico.model, equip->info.model);
+            historico.id = equip->info.id;
 
             do
             {
@@ -804,6 +808,9 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             case 5:
                 printHistorico(*inicioHistorico);
                 break;
+            case 7:
+                printAlertas(*inicioEquip);
+                break;
             case 9:
                 resetAdmin(inicioUser);
                 break;
@@ -902,6 +909,7 @@ int main(int argc, char const *argv[])
     inicioEquips = importEquips();
     inicioUser = importUsers();
     inicioDepart = importDeparts();
+    inicioHistorico = importHistorico();
     AdminSetup(&inicioUser);
     do
     {

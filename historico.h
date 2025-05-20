@@ -7,10 +7,10 @@ typedef struct historico
 {
     char tipo[20];
     int id;
-    char type[30];
+    char equipTipo[30];
     char brand[20];
     char model[20];
-    char desc[100];
+    char desc[50];
     DATE_H data;
 } HISTORICO;
 

@@ -86,9 +86,9 @@ void printHistorico(ELEM_H *inicio)
     ELEM_H *aux = NULL;
 
     printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
-    printf("%-20s | %-50s | %-10s \n", "TIPO", "DESCRICAO", "DATA");
+    printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-50s | %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "DATA");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("%-20s | %-50s | %-2d/%-2d/%-2d", aux->info.tipo, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+        printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
     }
 }

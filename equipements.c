@@ -710,3 +710,29 @@ int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[])
     printf("Relatorio criado com sucesso\n");
     return 0;
 }
+
+void printAlertas(ELEM_E *inicio)
+{
+    ELEM_E *aux = inicio;
+    printf("-------------------------------------------------------------------ALERTAS (> 5 anos)-------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.date.year < 2020)
+        {
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement);
+        }
+    }
+}
