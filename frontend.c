@@ -479,7 +479,29 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
             HISTORICO historico;
             strcpy(historico.tipo, "Movimentacao");
             strcpy(historico.desc, str);
-            char str[50];
+
+            int res;
+            do
+            {
+                printf("\nIntroduza a data de movimentacao no formate DD/MM/YYYY\n"); // Sistema de data, para mais tarde
+                char inputStr[11];
+                fgets(inputStr, sizeof(inputStr), stdin);
+                inputStr[strcspn(inputStr, "\n")] = '\0';
+                res = sscanf(inputStr, "%d/%d/%d", &historico.data.day, &historico.data.month, &historico.data.year);
+                getchar();
+                if (res != 3)
+                {
+                    printf("Erro relativamente ao formato introduzido\n");
+                    continue;
+                }
+
+                if (!equipsDateSystem(historico.data))
+                {
+                    continue;
+                }
+
+                break;
+            } while (1);
 
         case 0:
             break;
