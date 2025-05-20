@@ -256,6 +256,29 @@ int equipsDateSystem(DATE date)
     return 1;
 }
 
+int HistoricoDateSystem(DATE_H date)
+{
+    if (!verifYear(date.year))
+    {
+        printf("Erro relativamente ao ano introduzido\n");
+        return 0;
+    }
+
+    if (!verifMonth(date.month))
+    {
+        printf("Erro relativamente ao mes introduzido\n");
+        return 0;
+    }
+
+    if (!verifDay(date.day, date.month, date.year))
+    {
+        printf("Erro relativamente ao dia introduzido\n");
+        return 0;
+    }
+
+    return 1;
+}
+
 void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     EQUIPE equip;
@@ -347,7 +370,7 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 
 void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
 {
-    int input, target;
+    int input, target, res;
     char newName[20];
     ELEM_E *equip = NULL;
 
@@ -403,7 +426,6 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
             } while (verifNumSerie(inicioEquips, equip->info.num_serie == 1));
             break;
         case 5:
-            int res;
             do
             {
                 printf("\nIntroduza a nova data de aquisicao no formate DD/MM/YYYY\n");
@@ -465,7 +487,11 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
                 printf("Introduza o novo departamento\n");
                 scanf("%d", &equip->info.departement);
                 getchar();
-            } while (verifDepartNum(inicioDeparts, equip->info.departement) == 0);
+                if (equip->info.departement == previous)
+                {
+                    printf("O departamento escolhido, é o mesmo que anteriormente, tente novamente\n");
+                }
+            } while (verifDepartNum(inicioDeparts, equip->info.departement) == 0 && equip->info.departement == previous);
 
             ELEM_D *newDepart = NULL;
             newDepart = procurarDepart(inicioDeparts, equip->info.departement);
@@ -474,13 +500,12 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
             previousDepart = procurarDepart(inicioDeparts, previous);
 
             char str[200];
-            sprintf(str, " / Equimapento: %s - %s - %s - id: %d / Transferencia de Departamentos: %s ===> %s / Data: [%d/%d/%d]", equip->info.type, equip->info.brand, equip->info.model, equip->info.id);
+            sprintf(str, "Equipamento: %s - %s - %s - id: %d / Transferencia de Departamento: %s ===> %s", equip->info.type, equip->info.brand, equip->info.model, equip->info.id, previousDepart->info.name, newDepart->info.name);
 
             HISTORICO historico;
             strcpy(historico.tipo, "Movimentacao");
             strcpy(historico.desc, str);
 
-            int res;
             do
             {
                 printf("\nIntroduza a data de movimentacao no formate DD/MM/YYYY\n"); // Sistema de data, para mais tarde
@@ -495,13 +520,15 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
                     continue;
                 }
 
-                if (!equipsDateSystem(historico.data))
+                if (!HistoricoDateSystem(historico.data))
                 {
                     continue;
                 }
 
                 break;
             } while (1);
+
+            registrarHistorico(historico, inicioHistorico);
 
         case 0:
             break;
@@ -751,10 +778,10 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             printf("2 - Gerir departamentos\n");
             printf("3 - Gerir equipamentos\n");
             printf("4 - Criar relatorio\n");
-            printf("6 - Historico\n");
-            printf("7 - Avarias recorrentes\n");
-            printf("8 - Alertas\n");
-            printf("9 - Reiniciar conta admin\n");
+            printf("5 - Historico\n");
+            printf("6 - Avarias recorrentes\n");
+            printf("7 - Alertas\n");
+            printf("8 - Reiniciar conta admin\n");
             printf("0 - logout\n");
             printf("Escolha uma opcao: ");
             scanf("%d", &input);
@@ -773,6 +800,9 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 break;
             case 4:
                 RelatoriosMenu(*inicioEquip, *inicioDepart);
+                break;
+            case 5:
+                printHistorico(*inicioHistorico);
                 break;
             case 9:
                 resetAdmin(inicioUser);

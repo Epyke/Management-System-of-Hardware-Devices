@@ -16,10 +16,10 @@ typedef struct equipe
     int departement;
 } EQUIPE;
 
-typedef struct elem
+typedef struct elem_e
 {
     EQUIPE info;
-    struct elem *seguinte;
+    struct elem_e *seguinte;
 } ELEM_E;
 
 ELEM_E *importEquips();

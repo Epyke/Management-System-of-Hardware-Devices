@@ -4,7 +4,7 @@
 
 #include "historico.h"
 
-#define HISTORICOFILE "data/hisotrico.dat"
+#define HISTORICOFILE "data/historico.dat"
 
 ELEM_H *importHistorico()
 {
@@ -16,16 +16,16 @@ ELEM_H *importHistorico()
         return NULL;
     }
 
-    HISTORICO equip;
+    HISTORICO historico;
     ELEM_H *inicio = NULL;
     int res = 0;
 
     while (!feof(fp))
     {
-        res = fread(&equip, sizeof(HISTORICO), 1, fp);
+        res = fread(&historico, sizeof(HISTORICO), 1, fp);
         if (res == 1)
         {
-            insIniListaEquips(&inicio, equip);
+            insIniListaHistorico(&inicio, historico);
         }
         else
         {
@@ -63,7 +63,7 @@ int insIniListaHistorico(ELEM_H **inicio, HISTORICO info)
     return 0;
 }
 
-int registrarHistorico(HISTORICO equip, ELEM_H **inicio)
+int registrarHistorico(HISTORICO historico, ELEM_H **inicio)
 {
 
     FILE *fp = fopen(HISTORICOFILE, "ab");
@@ -74,9 +74,21 @@ int registrarHistorico(HISTORICO equip, ELEM_H **inicio)
         return -1;
     }
 
-    fwrite(&equip, sizeof(HISTORICO), 1, fp);
-    insIniListaEquips(inicio, equip);
+    fwrite(&historico, sizeof(HISTORICO), 1, fp);
+    insIniListaHistorico(inicio, historico);
     printf("Historico registado com sucesso\n");
     fclose(fp);
     return 0;
+}
+
+void printHistorico(ELEM_H *inicio)
+{
+    ELEM_H *aux = NULL;
+
+    printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
+    printf("%-20s | %-50s | %-10s \n", "TIPO", "DESCRICAO", "DATA");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        printf("%-20s | %-50s | %-2d/%-2d/%-2d", aux->info.tipo, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+    }
 }
