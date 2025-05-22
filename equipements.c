@@ -310,7 +310,22 @@ ELEM_E *procurarEquipDanificados(ELEM_E *inicio, int num)
     ELEM_E *aux = NULL;
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (aux->info.id == num && strcmp(aux->info.id, "Danificado") == 0)
+        if (aux->info.id == num && strcmp(aux->info.state, "Danificado") == 0)
+        {
+            return aux;
+            break;
+        }
+    }
+    printf("Nenhum resultado encontrado\n");
+    return NULL;
+}
+
+ELEM_E *procurarEquipManutencaoUser(ELEM_E *inicio, int num, char username[20])
+{
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.id == num && strcmp(aux->info.tecnico, username) == 0 && strcmp(aux->info.state, "Manutencao") == 0)
         {
             return aux;
             break;
@@ -325,7 +340,7 @@ ELEM_E *procurarEquipUsoDesativado(ELEM_E *inicio, int num)
     ELEM_E *aux = NULL;
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (aux->info.id == num && (strcmp(aux->info.id, "Desativado") == 0 || strcmp(aux->info.id, "Uso") == 0))
+        if (aux->info.id == num && (strcmp(aux->info.state, "Desativado") == 0 || strcmp(aux->info.state, "Uso") == 0))
         {
             return aux;
             break;
@@ -850,14 +865,13 @@ int escreverEquipsCSV(ELEM_E *inicioEquips, char username[])
     }
 
     ELEM_E *aux = NULL;
-    fprintf(fp, "--------------------------------------------------------------------------RELATORIO CSV--------------------------------------------------------------------------------------\n");
-    fprintf(fp, "%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
-    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    fprintf(fp, "ID,Tipo,Marca,Modelo,NumeroSerie,Data,Estado,Departamento,Tecnico\n");
+
     for (aux = inicioEquips; aux != NULL; aux = aux->seguinte)
     {
         if (strcmp(aux->info.tecnico, username) == 0)
         {
-            fprintf(fp, "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+            fprintf(fp, "%d,%s,%s,%s,%d,%d/%d/%d,%s,%d \n",
                     aux->info.id,
                     aux->info.type,
                     aux->info.brand,

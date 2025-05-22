@@ -503,11 +503,12 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
 
             HISTORICO historico;
             strcpy(historico.tipo, "Movimentacao");
-            strcpy(historico.desc, str);
             strcpy(historico.equipTipo, equip->info.type);
             strcpy(historico.brand, equip->info.brand);
             strcpy(historico.model, equip->info.model);
             historico.id = equip->info.id;
+            strcpy(historico.desc.movimentacao.previousDep, previousDepart->info.name);
+            strcpy(historico.desc.movimentacao.newDep, newDepart->info.name);
 
             do
             {
@@ -783,13 +784,13 @@ void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
         switch (input)
         {
         case 1:
-            printHistorico(inicioHistorico);
+            printHistoricoMovMan(inicioHistorico);
             break;
         case 2:
             printEquips(inicioEquip);
             printf("Introduza o ID do equipamento\n");
             scanf("%d", &inputID);
-            printHistoricoEquipID(inicioHistorico, inputID);
+            printHistoricoEquipIDMovMan(inicioHistorico, inputID);
             break;
         case 0:
             break;
@@ -799,17 +800,17 @@ void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
     } while (input != 0);
 }
 
-void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
+void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
 {
     int inputID, input;
     ELEM_E *equip = NULL;
-
+    HISTORICO historico;
     do
     {
-        printf("-----------------------------AVARIA/MANUTENCAO-----------------------------\n");
-        printf("1 - Avaria");
-        printf("2 - Reparacão");
-        printf("0 - Voltar");
+        printf("-----------------------------DECLARAR-----------------------------\n");
+        printf("1 - Avaria\n");
+        printf("2 - Manutencao\n");
+        printf("0 - Voltar\n");
 
         scanf("%d", &input);
         getchar();
@@ -818,8 +819,14 @@ void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
         {
 
         case 1:
-            filterEquipsStateUsoDesativado(inicioEquip);
-            print("Introduza o ID do equipamento pretendido\n");
+
+            if (filterEquipsStateUsoDesativado(inicioEquip) != 1)
+            {
+                break;
+                return;
+            }
+
+            printf("Introduza o ID do equipamento pretendido\n");
             scanf("%d", &inputID);
             getchar();
 
@@ -827,16 +834,32 @@ void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
 
             if (equip == NULL)
             {
+                break;
                 return;
             }
 
-            strcpy(equip->info.tecnico, username);
+            do
+            {
+                printf("Introduza o grau de gravidade da avaria (1-5)\n");
+                scanf("%d", historico.desc.avaria.gravidade);
+                getchar();
+            } while (historico.desc.avaria.gravidade > 0 && historico.desc.avaria.gravidade < 6);
+
+            printf("Introduza a descrição da avaria\n");
+            fgets(historico.desc.avaria.descAvaria, sizeof(historico.desc.avaria.descAvaria), stdin);
+            historico.desc.avaria.descAvaria[strcspn(historico.desc.avaria.descAvaria, "\n")] = '\0';
+
             strcpy(equip->info.state, "Danificado");
             break;
         case 2:
-            filterEquipsState(inicioEquip, "Danificado");
 
-            print("Introduza o ID do equipamento pretendido\n");
+            if (filterEquipsState(inicioEquip, "Danificado") != 1)
+            {
+                break;
+                return;
+            }
+
+            printf("Introduza o ID do equipamento pretendido\n");
             scanf("%d", &inputID);
             getchar();
 
@@ -844,9 +867,11 @@ void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
 
             if (equip == NULL)
             {
+                break;
                 return;
             }
 
+            strcpy(historico.desc.manutencao.tecnico, username);
             strcpy(equip->info.tecnico, username);
             strcpy(equip->info.state, "Manutencao");
             break;
@@ -858,21 +883,126 @@ void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
         }
     } while (input != 0);
 
-    printf("Introduza o ID de um equipamento\n");
-    scanf("%d", &inputID);
-    getchar();
+    strcpy(historico.equipTipo, equip->info.type);
+    strcpy(historico.brand, equip->info.brand);
+    strcpy(historico.model, equip->info.model);
+    historico.id = equip->info.id;
 
-    equip = procurarEquip(inicioEquip, inputID);
-
-    if (equip == NULL)
+    int res;
+    do
     {
-        return;
-    }
+        printf("\nIntroduza a data de aquisicao no formato DD/MM/YYYY\n");
+        char inputStr[11];
+        fgets(inputStr, sizeof(inputStr), stdin);
+        inputStr[strcspn(inputStr, "\n")] = '\0';
+        res = sscanf(inputStr, "%d/%d/%d", &historico.data.day, &historico.data.month, &historico.data.year);
+        getchar();
+        if (res != 3)
+        {
+            printf("Erro relativamente ao formato introduzido\n");
+            continue;
+        }
 
-    strcpy(equip->info.tecnico, username);
+        if (!HistoricoDateSystem(historico.data))
+        {
+            continue;
+        }
 
-    strcpy(equip->info.state, "Manutencao");
+        break;
+    } while (1);
     writeChangesEquips(inicioEquip);
+    registrarHistorico(historico, inicioHistorico);
+    printf("Atribuicao efetuada com sucesso\n");
+}
+
+void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
+{
+    int inputID, input;
+    ELEM_E *equip = NULL;
+    HISTORICO historico;
+    do
+    {
+        printf("-----------------------------REPARACAO-----------------------------\n");
+        printf("1 - Uso\n");
+        printf("2 - Desativacao\n");
+        printf("0 - Voltar\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        if (filterEquipsState(inicioEquip, "Manutencao") != 0)
+        {
+            return;
+        }
+
+        printf("Introduza o ID do equipamento pretendido\n");
+        scanf("%d", &inputID);
+        getchar();
+
+        equip = procurarEquipDanificados(inicioEquip, inputID);
+
+        if (equip == NULL)
+        {
+            return;
+        }
+
+        strcpy(historico.equipTipo, equip->info.type);
+        strcpy(historico.brand, equip->info.brand);
+        strcpy(historico.model, equip->info.model);
+        historico.id = equip->info.id;
+
+        int res;
+        do
+        {
+            printf("\nIntroduza a data de aquisicao no formato DD/MM/YYYY\n");
+            char inputStr[11];
+            fgets(inputStr, sizeof(inputStr), stdin);
+            inputStr[strcspn(inputStr, "\n")] = '\0';
+            res = sscanf(inputStr, "%d/%d/%d", &historico.data.day, &historico.data.month, &historico.data.year);
+            getchar();
+            if (res != 3)
+            {
+                printf("Erro relativamente ao formato introduzido\n");
+                continue;
+            }
+
+            if (!HistoricoDateSystem(historico.data))
+            {
+                continue;
+            }
+
+            break;
+        } while (1);
+
+        printf("Introduza o custo da reparacao\n");
+        scanf("%d", &historico.desc.reparacao.custo);
+        getchar();
+
+        strcpy(historico.desc.reparacao.tecnico, equip->info.tecnico);
+
+        printf("Indique as pecas substituidas na reparacao\n");
+        fgets(historico.desc.reparacao.pecas_substituidas, sizeof(historico.desc.reparacao.pecas_substituidas), stdin);
+        historico.desc.reparacao.pecas_substituidas[strcspn(historico.desc.reparacao.pecas_substituidas, "\n")] = '\0';
+
+        switch (input)
+        {
+        case 1:
+            strcpy(equip->info.tecnico, "Nenhum");
+            strcpy(equip->info.state, "Uso");
+            break;
+        case 2:
+            strcpy(equip->info.tecnico, "Nenhum");
+            strcpy(equip->info.state, "Desativado");
+            break;
+        case 0:
+            break;
+        default:
+            printf("Introduziu um valor inválido, tente novamente\n");
+            break;
+        }
+    } while (input != 0);
+    writeChangesEquips(inicioEquip);
+    registrarHistorico(historico, inicioHistorico);
     printf("Atribuicao efetuada com sucesso\n");
 }
 
@@ -989,9 +1119,8 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
 
             printf("\n-----------------------------------MENU-----------------------------------\n");
             printf("1 - Consultar equipamentos\n");
-            printf("2 - Registar uma nova avaria/manutencao\n");
-            printf("3 - Gerir equipamentos\n");
-            printf("4 - Registar componentes substituidas\n");
+            printf("2 - Declarar Manutencao/Avaria\n");
+            printf("3 - Reparacao\n");
             printf("0 - logout\n");
             printf("Escolhe uma opcao: ");
             scanf("%d", &input);
@@ -1000,10 +1129,14 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             switch (input)
             {
             case 1:
-                printEquipsTecnico(*inicioEquip, username);
+                TecnicoEquipsMenu(*inicioEquip, *inicioDepart, username);
                 break;
             case 2:
-
+                EquipamentosDeclararUser(*inicioUser, *inicioEquip, inicioHistorico, username);
+                break;
+            case 3:
+                EquipamentosRepararUser(*inicioUser, *inicioEquip, inicioHistorico, username);
+                break;
             case 0:
                 printf("\nLogout concluido\n\n");
                 break;

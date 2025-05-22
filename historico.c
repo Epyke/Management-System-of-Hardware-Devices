@@ -81,7 +81,7 @@ int registrarHistorico(HISTORICO historico, ELEM_H **inicio)
     return 0;
 }
 
-void printHistorico(ELEM_H *inicio)
+void printHistoricoMovMan(ELEM_H *inicio)
 {
     if (inicio == NULL)
     {
@@ -92,16 +92,24 @@ void printHistorico(ELEM_H *inicio)
     ELEM_H *aux = NULL;
 
     printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
-    printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-50s | %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "DATA");
+    printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-62s | %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "DATA");
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+
+        if (strcmp(aux->info.tipo, "Movimentacao") == 0)
+        {
+            printf("%-20s | %-30s | %-20s | %-20s | %-3d | Transferencia: %s --> %-40s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc.movimentacao.previousDep, aux->info.desc.movimentacao.newDep, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+        }
+        if (strcmp(aux->info.tipo, "Manutencao") == 0)
+        {
+            printf("%-20s | %-30s | %-20s | %-20s | %-3d | Novo tecnico: %-46s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc.manutencao.tecnico, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+        }
     }
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-void printHistoricoEquipID(ELEM_H *inicio, int ID)
+void printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID)
 {
     if (inicio == NULL)
     {
@@ -117,7 +125,14 @@ void printHistoricoEquipID(ELEM_H *inicio, int ID)
     {
         if (aux->info.id == ID)
         {
-            printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+            if (strcmp(aux->info.tipo, "Movimentacao") == 0)
+            {
+                printf("%-20s | %-30s | %-20s | %-20s | %-3d | Transferencia: %s --> %-40s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc.movimentacao.previousDep, aux->info.desc.movimentacao.newDep, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+            }
+            if (strcmp(aux->info.tipo, "Manutencao") == 0)
+            {
+                printf("%-20s | %-30s | %-20s | %-20s | %-3d | Novo tecnico: %-46s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc.manutencao.tecnico, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+            }
         }
     }
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
