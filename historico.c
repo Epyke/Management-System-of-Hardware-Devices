@@ -83,12 +83,42 @@ int registrarHistorico(HISTORICO historico, ELEM_H **inicio)
 
 void printHistorico(ELEM_H *inicio)
 {
+    if (inicio == NULL)
+    {
+        printf("Historico vazio\n");
+        return;
+    }
+
     ELEM_H *aux = NULL;
 
     printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
     printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-50s | %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "DATA");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
     }
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+void printHistoricoEquipID(ELEM_H *inicio, int ID)
+{
+    if (inicio == NULL)
+    {
+        printf("Historico vazio\n");
+        return;
+    }
+
+    ELEM_H *aux = NULL;
+    printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
+    printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-50s | %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "DATA");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.id == ID)
+        {
+            printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+        }
+    }
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }

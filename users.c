@@ -188,7 +188,7 @@ int usersRelease(ELEM_U **inicio)
     *inicio = NULL;
 }
 
-int registrar(char username[20], char password[20], ELEM_U *inicio)
+int registrar(char username[20], char password[20], ELEM_U **inicio)
 {
 
     FILE *fp = fopen(USERFILE, "ab");
@@ -205,22 +205,20 @@ int registrar(char username[20], char password[20], ELEM_U *inicio)
     strcpy(user.password, password);
     user.state = 0;
     fwrite(&user, sizeof(USER), 1, fp);
-    insIniLista(&inicio, user);
+    insIniLista(inicio, user);
     printf("Pedido de incricao enviado com sucesso\n");
     fclose(fp);
     return 0;
 }
 
-int usernameVerif(char username[20], ELEM_U *inicio)
+int usernameVerif(char username[20], ELEM_U **inicio)
 {
     ELEM_U *aux = NULL;
-    int user_exists = 0;
 
-    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
     {
         if (strcmp(aux->info.username, username) == 0)
         {
-            user_exists = 1;
 
             if (aux->info.state == 0)
             {
@@ -234,24 +232,22 @@ int usernameVerif(char username[20], ELEM_U *inicio)
         }
     }
 
-    if (user_exists == 0)
+    printf("Este utilizador nao existe, deseja enviar um pedido de criacao?\n");
+    printf("1 - SIM\n");
+    printf("0 - NAO\n");
+    int option;
+    scanf("%d", &option);
+    getchar();
+    if (option == 1)
     {
-        printf("Este utilizador nao existe, deseja enviar um pedido de criacao?\n");
-        printf("1 - SIM\n");
-        printf("0 - NAO\n");
-        int option;
-        scanf("%d", &option);
-        getchar();
-        if (option == 1)
-        {
-            printf("Introduza uma password de acesso\n");
-            char password[20];
-            fgets(password, sizeof(password), stdin);
-            password[strcspn(password, "\n")] = '\0';
+        printf("Introduza uma password de acesso\n");
+        char password[20];
+        fgets(password, sizeof(password), stdin);
+        password[strcspn(password, "\n")] = '\0';
 
-            registrar(username, password, inicio);
-        }
+        registrar(username, password, inicio);
     }
+
     return -1;
 }
 
@@ -284,65 +280,62 @@ void printUtilizadores(ELEM_U *inicio)
     printf("--------------------------------------------------------------------------------------------\n");
 }
 
-int ativarUtilizadores(ELEM_U **inicio)
+ELEM_U *procurarUserAtivo(ELEM_U *inicio, char username[])
 {
-    char input[20];
-    printUtilizadores(*inicio);
-
     ELEM_U *aux = NULL;
-    int count = 0;
-
-    do
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("\nIntroduza o nome de um utilizador: ");
-        fgets(input, sizeof(input), stdin);
-        input[strcspn(input, "\n")] = '\0';
-
-        if (strcmp(input, "Exit") == 0 || strcmp(input, "exit") == 0 || strcmp(input, "EXIT") == 0)
+        if (strcmp(username, aux->info.username) == 0 && aux->info.state == 1)
         {
+            return aux;
             break;
         }
+    }
+    printf("Nenhum resultado encontrado, tente novamente\n");
+    return NULL;
+}
 
-        printf("--------------------------------------------------------------------------------------------\n");
-        for (aux = *inicio; aux != NULL; aux = aux->seguinte)
-        {
-            if (strstr(aux->info.username, input) && (aux->info.state == 1 || aux->info.state == 0))
-            {
-                count++;
-                printf("%-20s | %-20s | %-2d \n", aux->info.username, aux->info.password, aux->info.state);
-            }
-        }
-        printf("--------------------------------------------------------------------------------------------\n");
-    } while (count > 1);
-
-    if (count == 0)
+ELEM_U *procurarUser(ELEM_U *inicio, char username[])
+{
+    ELEM_U *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        printf("Nenhum utilizador encontrado\n");
+        if (strcmp(username, aux->info.username) == 0 && (aux->info.state == 1 || aux->info.state == 0))
+        {
+            return aux;
+            break;
+        }
+    }
+    printf("Nenhum resultado encontrado, tente novamente\n");
+    return NULL;
+}
+
+int ativarUtilizadores(ELEM_U *inicio, char username[])
+{
+
+    char input[20];
+
+    ELEM_U *user = NULL;
+    user = procurarUser(inicio, username);
+    if (user == NULL)
+    {
         return -1;
     }
 
-    for (aux = *inicio; aux != NULL; aux = aux->seguinte)
-    {
-        if (strstr(aux->info.username, input) && (aux->info.state == 1 || aux->info.state == 0))
-        {
-            break;
-        }
-    }
-
     int input2;
-    if (aux->info.state == 0)
+    if (user->info.state == 0)
     {
-        printf("Deseja ativar o utilizador %s ?\n");
+        printf("Deseja ativar o utilizador %s ?\n", user->info.username);
         printf("1 - Ativar\n");
         printf("0 - Sair\n");
-        printf("Escolha uma opção: ");
+        printf("Escolha uma opcao: ");
         scanf("%d", &input2);
         getchar();
 
         switch (input2)
         {
         case 1:
-            aux->info.state = 1;
+            user->info.state = 1;
             break;
         default:
             break;
@@ -351,22 +344,22 @@ int ativarUtilizadores(ELEM_U **inicio)
     else
     {
 
-        printf("Deseja desativar o utilziador %s ?\n");
+        printf("Deseja desativar o utilizador %s ?\n", user->info.username);
         printf("1 - Desativar\n");
         printf("0 - Sair\n");
-        printf("Escolha uma opção: ");
+        printf("Escolha uma opcao: ");
         scanf("%d", &input2);
         getchar();
 
         switch (input2)
         {
         case 1:
-            aux->info.state = 0;
+            user->info.state = 0;
             break;
         default:
             break;
         }
     }
-    writeChanges(*inicio);
+    writeChanges(inicio);
     return 0;
 }

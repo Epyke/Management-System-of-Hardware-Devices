@@ -27,3 +27,5 @@ int insIniListaHistorico(ELEM_H **inicio, HISTORICO info);
 int registrarHistorico(HISTORICO equip, ELEM_H **inicio);
 
 void printHistorico(ELEM_H *inicio);
+
+void printHistoricoEquipID(ELEM_H *inicio, int ID);

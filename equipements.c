@@ -162,13 +162,19 @@ int equipsRelease(ELEM_E **inicio)
 void printEquips(ELEM_E *inicio)
 {
     ELEM_E *aux = NULL;
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    if (inicio == NULL)
+    {
+        printf("Nenhum equipamento existente\n");
+    }
+
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         printf(
-            "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+            "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
             aux->info.id,
             aux->info.type,
             aux->info.brand,
@@ -178,9 +184,43 @@ void printEquips(ELEM_E *inicio)
             aux->info.date.month,
             aux->info.date.year,
             aux->info.state,
-            aux->info.departement);
+            aux->info.departement,
+            aux->info.tecnico);
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+void printEquipsTecnico(ELEM_E *inicio, char tecnico[])
+{
+    if (inicio == NULL)
+    {
+        printf("Nenhum equipamento atribuido\n");
+    }
+
+    ELEM_E *aux = NULL;
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (strcmp(aux->info.tecnico, tecnico) == 0)
+        {
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement,
+                aux->info.tecnico);
+        }
+        printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    }
 }
 
 int eliminarEquip(ELEM_E **inicio, int numero)
@@ -265,6 +305,36 @@ ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num)
     }
 }
 
+ELEM_E *procurarEquipDanificados(ELEM_E *inicio, int num)
+{
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.id == num && strcmp(aux->info.id, "Danificado") == 0)
+        {
+            return aux;
+            break;
+        }
+    }
+    printf("Nenhum resultado encontrado\n");
+    return NULL;
+}
+
+ELEM_E *procurarEquipUsoDesativado(ELEM_E *inicio, int num)
+{
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.id == num && (strcmp(aux->info.id, "Desativado") == 0 || strcmp(aux->info.id, "Uso") == 0))
+        {
+            return aux;
+            break;
+        }
+    }
+    printf("Nenhum resultado encontrado\n");
+    return NULL;
+}
+
 ELEM_E *procurarEquip(ELEM_E *inicio, int numero)
 {
 
@@ -342,6 +412,21 @@ int findExistingStrType(ELEM_E *inicio, char str[])
     return 0;
 }
 
+int findExistingTypeDanificadoUso(ELEM_E *inicio)
+{
+    ELEM_E *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->info.type, "Uso") == 0 || strcmp(aux->info.type, "Desativado") == 0)
+        {
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+    return 0;
+}
+
 int filterEquipsType(ELEM_E *inicio, char type[])
 {
     if (findExistingStrType(inicio, type) != 1)
@@ -351,15 +436,15 @@ int filterEquipsType(ELEM_E *inicio, char type[])
     }
 
     ELEM_E *aux = NULL;
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (strstr(aux->info.type, type) != NULL)
+        if (strcmp(aux->info.type, type) == 0)
         {
             printf(
-                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
                 aux->info.id,
                 aux->info.type,
                 aux->info.brand,
@@ -369,7 +454,8 @@ int filterEquipsType(ELEM_E *inicio, char type[])
                 aux->info.date.month,
                 aux->info.date.year,
                 aux->info.state,
-                aux->info.departement);
+                aux->info.departement,
+                aux->info.tecnico);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -386,15 +472,15 @@ int filterEquipsState(ELEM_E *inicio, char state[])
     }
 
     ELEM_E *aux = NULL;
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (strstr(aux->info.state, state) != NULL)
+        if (strcmp(aux->info.state, state) == 0)
         {
             printf(
-                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
                 aux->info.id,
                 aux->info.type,
                 aux->info.brand,
@@ -404,7 +490,44 @@ int filterEquipsState(ELEM_E *inicio, char state[])
                 aux->info.date.month,
                 aux->info.date.year,
                 aux->info.state,
-                aux->info.departement);
+                aux->info.departement,
+                aux->info.tecnico);
+        }
+    }
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    return 0;
+}
+
+int filterEquipsStateUsoDesativado(ELEM_E *inicio)
+{
+
+    if (findExistingTypeDanificadoUso(inicio) != 1)
+    {
+        printf("Nenhum resultado encontrado\n");
+        return -1;
+    }
+
+    ELEM_E *aux = NULL;
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (strcmp(aux->info.state, "Uso") == 0 || strcmp(aux->info.state, "Desativado"))
+        {
+            printf(
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
+                aux->info.id,
+                aux->info.type,
+                aux->info.brand,
+                aux->info.model,
+                aux->info.num_serie,
+                aux->info.date.day,
+                aux->info.date.month,
+                aux->info.date.year,
+                aux->info.state,
+                aux->info.departement,
+                aux->info.tecnico);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -420,15 +543,15 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     }
 
     ELEM_E *aux = NULL;
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
-    printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
         if (aux->info.departement == num)
         {
             printf(
-                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
                 aux->info.id,
                 aux->info.type,
                 aux->info.brand,
@@ -438,7 +561,8 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
                 aux->info.date.month,
                 aux->info.date.year,
                 aux->info.state,
-                aux->info.departement);
+                aux->info.departement,
+                aux->info.tecnico);
         }
     }
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -708,6 +832,45 @@ int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[])
     }
     fclose(fp);
     printf("Relatorio criado com sucesso\n");
+    return 0;
+}
+
+int escreverEquipsCSV(ELEM_E *inicioEquips, char username[])
+{
+    FILE *fp = NULL;
+    char str[50] = "Relatorios/Equipamentos";
+    strcat(str, username);
+    strcat(str, ".csv");
+    fp = fopen(str, "w");
+
+    if (fp == NULL)
+    {
+        printf("Erro ao abrir o ficheiro\n");
+        return -1;
+    }
+
+    ELEM_E *aux = NULL;
+    fprintf(fp, "--------------------------------------------------------------------------RELATORIO CSV--------------------------------------------------------------------------------------\n");
+    fprintf(fp, "%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
+    fprintf(fp, "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for (aux = inicioEquips; aux != NULL; aux = aux->seguinte)
+    {
+        if (strcmp(aux->info.tecnico, username) == 0)
+        {
+            fprintf(fp, "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",
+                    aux->info.id,
+                    aux->info.type,
+                    aux->info.brand,
+                    aux->info.model,
+                    aux->info.num_serie,
+                    aux->info.date.day,
+                    aux->info.date.month,
+                    aux->info.date.year,
+                    aux->info.state,
+                    aux->info.departement);
+        }
+    }
+    fclose(fp);
     return 0;
 }
 

@@ -332,9 +332,8 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     {
         printf("Escolha do estado:\n");
         printf("1 - Uso (equipamento em uso)\n");
-        printf("2 - Manutencao (equipamento em manutencao)\n");
-        printf("3 - Danificado\n");
-        printf("4 - Desativado\n");
+        printf("2 - Danificado\n");
+        printf("3 - Desativado\n");
         scanf("%d", &escolha);
         getchar();
         switch (escolha)
@@ -343,12 +342,9 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
             strcpy(equip.state, "Uso");
             break;
         case 2:
-            strcpy(equip.state, "Manutencao");
-            break;
-        case 3:
             strcpy(equip.state, "Danificado");
             break;
-        case 4:
+        case 3:
             strcpy(equip.state, "Desativado");
             break;
         default:
@@ -364,6 +360,8 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
         scanf("%d", &equip.departement);
         getchar();
     } while (verifDepartNum(inicioDeparts, equip.departement) == 0);
+
+    strcpy(equip.tecnico, "Nenhum");
 
     registrarEquips(equip, inicioEquips);
 }
@@ -448,14 +446,18 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
             } while (1);
             break;
         case 6:
+            if (strcmp(equip->info.state, "Manutencao") == 0)
+            {
+                printf("O estado dos equipamentos em manutencao, apenas podem ser alterados pelo respetivo tecnico\n");
+                break;
+            }
             int escolha;
             do
             {
                 printf("Escolha do novo estado:\n");
                 printf("1 - Uso (equipamento em uso)\n");
-                printf("2 - Manutencao (equipamento em manutencao)\n");
-                printf("3 - Danificado\n");
-                printf("4 - Desativado\n");
+                printf("2 - Danificado\n");
+                printf("3 - Desativado\n");
                 scanf("%d", &escolha);
                 getchar();
                 switch (escolha)
@@ -464,12 +466,9 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
                     strcpy(equip->info.state, "Uso");
                     break;
                 case 2:
-                    strcpy(equip->info.state, "Manutencao");
-                    break;
-                case 3:
                     strcpy(equip->info.state, "Danificado");
                     break;
-                case 4:
+                case 3:
                     strcpy(equip->info.state, "Desativado");
                     break;
                 default:
@@ -768,6 +767,153 @@ void RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
+{
+    int input, inputID;
+    do
+    {
+        printf("\n-----------------------------------HISTORICO-----------------------------------\n");
+        printf("1 - Completo\n");
+        printf("2 - Equipamento\n");
+        printf("0 - Return\n");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+        case 1:
+            printHistorico(inicioHistorico);
+            break;
+        case 2:
+            printEquips(inicioEquip);
+            printf("Introduza o ID do equipamento\n");
+            scanf("%d", &inputID);
+            printHistoricoEquipID(inicioHistorico, inputID);
+            break;
+        case 0:
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+        }
+    } while (input != 0);
+}
+
+void atribuirTecnico(ELEM_U *inicioUser, ELEM_E *inicioEquip, char username[])
+{
+    int inputID, input;
+    ELEM_E *equip = NULL;
+
+    do
+    {
+        printf("-----------------------------AVARIA/MANUTENCAO-----------------------------\n");
+        printf("1 - Avaria");
+        printf("2 - Reparacão");
+        printf("0 - Voltar");
+
+        scanf("%d", &input);
+        getchar();
+
+        switch (input)
+        {
+
+        case 1:
+            filterEquipsStateUsoDesativado(inicioEquip);
+            print("Introduza o ID do equipamento pretendido\n");
+            scanf("%d", &inputID);
+            getchar();
+
+            equip = procurarEquipUsoDesativado(inicioEquip, inputID);
+
+            if (equip == NULL)
+            {
+                return;
+            }
+
+            strcpy(equip->info.tecnico, username);
+            strcpy(equip->info.state, "Danificado");
+            break;
+        case 2:
+            filterEquipsState(inicioEquip, "Danificado");
+
+            print("Introduza o ID do equipamento pretendido\n");
+            scanf("%d", &inputID);
+            getchar();
+
+            equip = procurarEquipDanificados(inicioEquip, inputID);
+
+            if (equip == NULL)
+            {
+                return;
+            }
+
+            strcpy(equip->info.tecnico, username);
+            strcpy(equip->info.state, "Manutencao");
+            break;
+        case 0:
+            break;
+        default:
+            printf("Introduziu um valor inválido, tente novamente\n");
+            break;
+        }
+    } while (input != 0);
+
+    printf("Introduza o ID de um equipamento\n");
+    scanf("%d", &inputID);
+    getchar();
+
+    equip = procurarEquip(inicioEquip, inputID);
+
+    if (equip == NULL)
+    {
+        return;
+    }
+
+    strcpy(equip->info.tecnico, username);
+
+    strcpy(equip->info.state, "Manutencao");
+    writeChangesEquips(inicioEquip);
+    printf("Atribuicao efetuada com sucesso\n");
+}
+
+void TecnicoEquipsMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, char username[])
+{
+    int input, num;
+    do
+    {
+
+        printf("\n-----------------------------------EQUIPAMENTOS-----------------------------------\n");
+        printf("1 - Meus equipamentos\n");
+        printf("2 - Criar CSV (meus equimapentos)\n");
+        printf("3 - Procurar equipamentos por departamento\n");
+        printf("0 - Voltar\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &input);
+        getchar();
+        switch (input)
+        {
+        case 1:
+            printEquipsTecnico(inicioEquips, username);
+            break;
+        case 2:
+            escreverEquipsCSV(inicioEquips, username);
+            break;
+        case 3:
+            printDeparts(inicioDeparts);
+            printf("Introduza o numero de um departamento\n");
+            scanf("%d", &num);
+            filterEquipsDeparts(inicioEquips, num);
+            break;
+        case 0:
+            printf("\nLogout concluido\n\n");
+            break;
+        default:
+            printf("\nValor introduzido incorreto, tente novamente\n\n");
+            break;
+        }
+    } while (input != 0);
+}
+
 int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDepart, ELEM_E **inicioEquip, ELEM_H **inicioHistorico)
 {
 
@@ -794,7 +940,19 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             switch (input)
             {
             case 1:
-                ativarUtilizadores(inicioUser);
+                char inputUsername[20];
+
+                if (*inicioUser == NULL)
+                {
+                    printf("Nenhum utilizador na lista de ativacao\n");
+                    break;
+                }
+
+                printUtilizadores(*inicioUser);
+                printf("Introduza um nome de utilizador:\n");
+                fgets(inputUsername, sizeof(inputUsername), stdin);
+                inputUsername[strcspn(inputUsername, "\n")] = '\0';
+                ativarUtilizadores(*inicioUser, inputUsername);
                 break;
             case 2:
                 departsMenu(inicioDepart, inicioEquip);
@@ -806,12 +964,12 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 RelatoriosMenu(*inicioEquip, *inicioDepart);
                 break;
             case 5:
-                printHistorico(*inicioHistorico);
+                HistoricoMenu(*inicioHistorico, *inicioEquip);
                 break;
             case 7:
                 printAlertas(*inicioEquip);
                 break;
-            case 9:
+            case 8:
                 resetAdmin(inicioUser);
                 break;
             case 0:
@@ -831,11 +989,9 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
 
             printf("\n-----------------------------------MENU-----------------------------------\n");
             printf("1 - Consultar equipamentos\n");
-            printf("2 - Listar para ficheiro\n");
-            printf("3 - Consultar inventario\n");
-            printf("4 - Registar uma nova avaria ou manutencao\n");
-            printf("5 - Gerir equipamentos\n");
-            printf("6 - Registar componentes substituidas\n");
+            printf("2 - Registar uma nova avaria/manutencao\n");
+            printf("3 - Gerir equipamentos\n");
+            printf("4 - Registar componentes substituidas\n");
             printf("0 - logout\n");
             printf("Escolhe uma opcao: ");
             scanf("%d", &input);
@@ -843,6 +999,11 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
 
             switch (input)
             {
+            case 1:
+                printEquipsTecnico(*inicioEquip, username);
+                break;
+            case 2:
+
             case 0:
                 printf("\nLogout concluido\n\n");
                 break;
@@ -870,7 +1031,7 @@ int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, 
         return 0;
     }
 
-    int resU = usernameVerif(inputU, *inicioUser);
+    int resU = usernameVerif(inputU, inicioUser);
 
     if (resU != 0)
     {
@@ -896,7 +1057,7 @@ int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, 
     AdminPasswordChange(*inicioUser);
     printf("Bem-vindo %s", inputU);
     handlePermissions(inicioUser, inputU, inicioDepart, inicioEquip, inicioHistorico);
-    return 0;
+    return -1;
 }
 
 int main(int argc, char const *argv[])
