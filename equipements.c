@@ -46,6 +46,14 @@ int verifNumSerie(ELEM_E *inicio, int num_serie)
     return 0;
 }
 
+int verifMesmaAvariaExistente(ELEM_E *inicio, char descAvaria[])
+{
+    if (inicio == NULL)
+    {
+        return 0;
+    }
+}
+
 int insIniListaEquips(ELEM_E **inicio, EQUIPE info)
 {
     ELEM_E *new = NULL;
@@ -320,7 +328,7 @@ ELEM_E *procurarEquipDanificados(ELEM_E *inicio, int num)
     return NULL;
 }
 
-ELEM_E *procurarEquipManutencaoUser(ELEM_E *inicio, int num, char username[20])
+ELEM_E *procurarEquipManutencaoUser(ELEM_E *inicio, int num, char username[])
 {
     ELEM_E *aux = NULL;
     for (aux = inicio; aux != NULL; aux = aux->seguinte)

@@ -137,3 +137,48 @@ void printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID)
     }
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
+
+int printAvariasRecorrencia(ELEM_H *inicio)
+{
+    if (inicio == NULL)
+    {
+        return 0;
+    }
+    ELEM_H *aux = NULL, *previous = NULL;
+    aux = inicio;
+    int maiorRecorrencia;
+    printf("----------------------------------------------------------------------------HISTORICO---------------------------------------------------------------------------------------\n");
+    printf("%-20s | %-30s | %-20s | %-20s | %-3s | %-50s | %-9s | %-12s| %-10s \n", "TIPO", "EQUIPAMENTO", "MARCA", "MODELO", "ID", "DESCRICAO", "GRAVIDADE", "RECORRENCIAS", "DATA");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    while (aux != NULL)
+    {
+        {
+            if (strcpy(aux->info.tipo, "Avaria") == 0 && aux->info.desc.avaria.recorrencias > 2 && strcmp(previous->info.desc.avaria.descAvaria, aux->info.desc.avaria.descAvaria) != 0)
+            {
+                printf("%-20s | %-30s | %-20s | %-20s | %-3d | %-50s | %-9d | %-12d |%-2d/%-2d/%-2d \n", aux->info.tipo, aux->info.equipTipo, aux->info.brand, aux->info.model, aux->info.id, aux->info.desc.avaria.descAvaria, aux->info.desc.avaria.gravidade, aux->info.desc.avaria.recorrencias, aux->info.data.day, aux->info.data.month, aux->info.data.year);
+            }
+        }
+        previous = aux;
+        aux = aux->seguinte;
+    }
+}
+
+int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[])
+{
+    if (inicio == NULL)
+    {
+        return 0;
+    }
+
+    ELEM_H *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->info.tipo, "Avaria") == 0 && strcmp(aux->info.tipo, descAvaria))
+        {
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+    return 0;
+}

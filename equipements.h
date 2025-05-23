@@ -25,6 +25,10 @@ typedef struct elem_e
 
 ELEM_E *importEquips();
 
+// Funções de procura
+
+ELEM_E *procurarEquipManutencaoUser(ELEM_E *inicio, int num, char username[]);
+
 ELEM_E *procurarEquip(ELEM_E *inicio, int numero);
 
 ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num);

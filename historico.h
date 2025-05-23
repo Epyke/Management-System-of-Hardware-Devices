@@ -62,3 +62,7 @@ int registrarHistorico(HISTORICO equip, ELEM_H **inicio);
 void printHistoricoMovMan(ELEM_H *inicio);
 
 void printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID);
+
+int printAvariasRecorrencia(ELEM_H *inicio);
+
+int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[]);
