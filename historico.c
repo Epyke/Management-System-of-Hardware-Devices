@@ -142,7 +142,7 @@ int printAvariasRecorrencia(ELEM_H *inicio)
 {
     if (inicio == NULL)
     {
-        return 0;
+        return -1;
     }
     ELEM_H *aux = NULL, *previous = NULL;
     aux = inicio;
@@ -161,6 +161,7 @@ int printAvariasRecorrencia(ELEM_H *inicio)
         previous = aux;
         aux = aux->seguinte;
     }
+    return 0;
 }
 
 int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[])
@@ -180,5 +181,24 @@ int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[])
         }
         aux = aux->seguinte;
     }
+    return 0;
+}
+
+int historicoRelease(ELEM_H **inicio)
+{
+    if (*inicio == NULL)
+    {
+        return -1;
+    }
+    ELEM_H *aux = NULL, *next = NULL;
+    aux = *inicio;
+
+    while (aux != NULL)
+    {
+        next = aux->seguinte;
+        free(aux);
+        aux = next;
+    }
+    *inicio = NULL;
     return 0;
 }

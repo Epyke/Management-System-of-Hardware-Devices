@@ -72,7 +72,7 @@ int AdminPasswordChange(ELEM_U *inicio)
     {
         if (strcmp(aux->info.username, "admin") == 0 && aux->info.state == 1)
         {
-            // Existe um perfil admin novo
+            // Novo perfil admin
             char input[20];
             printf("Primeira sessao iniciada como admin, introduza uma nova senha\n");
             fgets(input, sizeof(input), stdin);
@@ -188,7 +188,7 @@ int usersRelease(ELEM_U **inicio)
     *inicio = NULL;
 }
 
-int registrar(char username[20], char password[20], ELEM_U **inicio)
+int registrar(char username[], char password[], ELEM_U **inicio)
 {
 
     FILE *fp = fopen(USERFILE, "ab");
@@ -211,7 +211,7 @@ int registrar(char username[20], char password[20], ELEM_U **inicio)
     return 0;
 }
 
-int usernameVerif(char username[20], ELEM_U **inicio)
+int usernameVerif(char username[], ELEM_U **inicio)
 {
     ELEM_U *aux = NULL;
 
@@ -251,7 +251,7 @@ int usernameVerif(char username[20], ELEM_U **inicio)
     return -1;
 }
 
-int passwordVerif(char username[20], char passwd[20], ELEM_U inicio)
+int passwordVerif(char username[], char passwd[], ELEM_U inicio)
 {
     ELEM_U *aux = NULL;
 

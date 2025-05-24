@@ -5,6 +5,20 @@
 #include "equipements.h"
 #include "historico.h"
 
+/**
+ * @file frontend.c
+ * Ficheiro principal que contêm todas as funções relativas ao menu.
+ * @author Henrique Fernandes
+ * @date 24/04/2025
+ * @version 0.1
+ */
+
+/**
+ * @fn inputDeparts(ELEM_D **inicioDeparts)
+ * @brief Cria um novo user, com os dados inseridos pelo utilizador.
+ * @param inicioDeparts
+ * @return int
+ */
 int inputDeparts(ELEM_D **inicioDeparts)
 {
     DEPART depart;
@@ -20,6 +34,11 @@ int inputDeparts(ELEM_D **inicioDeparts)
     return 0;
 }
 
+/**
+ * @fn altDepartMenu(ELEM_D *inicioDeparts)
+ * @brief Escreve o menu, que permite alterar as informações de um departamento.
+ * @param inicioDeparts
+ */
 void altDepartMenu(ELEM_D *inicioDeparts)
 {
     int input, target;
@@ -63,6 +82,12 @@ void altDepartMenu(ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+/**
+ * @fn filtrarMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
+ * @brief Escreve o menu que permite filtrar os equipamentos.
+ * @param inicioEquips
+ * @param inicioDeparts
+ */
 void filtrarMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
 {
     int input, dep;
@@ -135,6 +160,11 @@ void filtrarMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+/**
+ * @fn OrdenarMenu(ELEM_E **inicioEquips)
+ * @brief Escreve o menu que permite ordenar equipamentos.
+ * @param inicioEquips
+ */
 void OrdenarMenu(ELEM_E **inicioEquips)
 {
     int input;
@@ -164,6 +194,12 @@ void OrdenarMenu(ELEM_E **inicioEquips)
     } while (input != 0);
 }
 
+/**
+ * @fn listEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
+ * @brief Escreve o menu que permite escolher o tipo de listagem de equipamentos.
+ * @param inicioEquips
+ * @param inicioDeparts
+ */
 void listEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     int input;
@@ -193,6 +229,14 @@ void listEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+/**
+ * @fn verifYear(int year)
+ * @brief Verifica a validade do ano passado como argumento.
+ * Se 1900<ano<2026 retorna 1
+ * Se não retorna 0
+ * @param year
+ * @return int
+ */
 int verifYear(int year)
 {
     if (year < 1900 || year > 2026)
@@ -201,7 +245,14 @@ int verifYear(int year)
     }
     return 1;
 }
-
+/**
+ * @fn verifMonth(int month)
+ * @brief Verifica o mês passado como argumento.
+ * Se 1<mês<12 retorna 1
+ * Se não retorna 0
+ * @param month
+ * @return int
+ */
 int verifMonth(int month)
 {
     if (month < 1 || month > 12)
@@ -211,6 +262,20 @@ int verifMonth(int month)
     return 1;
 }
 
+/**
+ * @fn verifDay(int day, int month, int year)
+ * @brief Verifica o dia passado por argumento.
+ * Retorna 1 se for valido
+ * Avril, Junho, Setembro Novembro: 30 dias
+ * Restantes meses exeto fevreiro: 31 dias
+ * Fevreiro: 28 dias
+ * Ano bissexto, fevreiro: 29 dias
+ * Retorna 0, se for invalido
+ * @param day
+ * @param month
+ * @param year
+ * @return int
+ */
 int verifDay(int day, int month, int year)
 {
     if ((day < 1 || day > 31))
@@ -233,6 +298,14 @@ int verifDay(int day, int month, int year)
     return 1;
 }
 
+/**
+ * @fn equipsDateSystem(DATE date)
+ * @brief Agrupa todas as funções que verificam a data (equipamentos).
+ * Retorna 1 se tudo correr bem
+ * Se não retorna 0
+ * @param date
+ * @return int
+ */
 int equipsDateSystem(DATE date)
 {
     if (!verifYear(date.year))
@@ -256,6 +329,14 @@ int equipsDateSystem(DATE date)
     return 1;
 }
 
+/**
+ * @fn HistoricoDateSystem(DATE_H date)
+ * @brief Agrupa todas as funções que verificam a data (historico).
+ * Retorna 1 se tudo correr bem
+ * Se não retorna 0
+ * @param date
+ * @return int
+ */
 int HistoricoDateSystem(DATE_H date)
 {
     if (!verifYear(date.year))
@@ -279,6 +360,12 @@ int HistoricoDateSystem(DATE_H date)
     return 1;
 }
 
+/**
+ * @fn inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
+ * @brief Cria um equipamento, com os dados introduzidos pelo utilizador.
+ * @param date
+ * @return int
+ */
 void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
 {
     EQUIPE equip;
@@ -366,6 +453,13 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     registrarEquips(equip, inicioEquips);
 }
 
+/**
+ * @fn altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
+ * @brief Escreve o menu que permite a alteração de equipamentos
+ * @param inicioEquips
+ * @param inicioDeparts
+ * @param inicioHistorico
+ */
 void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
 {
     int input, target, res;
@@ -543,6 +637,14 @@ void altEquipMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHi
     writeChangesEquips(inicioEquips);
 }
 
+/**
+ * @fn equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
+ * @brief Menu que permite gerir todos os equipamentos.
+ * Listar, Adicionar, Alterar, Remover
+ * @param inicioEquips
+ * @param inicioDeparts
+ * @param inicioHistorico
+ */
 void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
 {
     int input, num;
@@ -614,6 +716,13 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHis
     } while (input != 0);
 }
 
+/**
+ * @fn departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
+ * @brief Escrever o menu que permite gerir todos os departamentos.
+ * Listar, Adicionar, Alterar, Remover
+ * @param inicioDeparts
+ * @param inicioEquips
+ */
 void departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
 {
     int input, num;
@@ -704,6 +813,13 @@ void departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
     } while (input != 0);
 }
 
+/**
+ * @fn RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
+ * @brief Escreve o menu que permite escrever relatorios.
+ * Escolha entre escrever um relatorio por estado ou por departamento.
+ * @param inicioEquips
+ * @param inicioDeparts
+ */
 void RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
 {
     int input, num;
@@ -768,6 +884,13 @@ void RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
     } while (input != 0);
 }
 
+/**
+ * @fn HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
+ * @brief Escreve o menu que permite listar o historico dos equipamentos.
+ * Listagem das movimentacoes e manutencoes
+ * @param inicioHistorico
+ * @param inicioEquip
+ */
 void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
 {
     int input, inputID;
@@ -800,6 +923,15 @@ void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
     } while (input != 0);
 }
 
+/**
+ * @fn EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
+ * @brief Escreve o menu que permite ao tecnico de declarar um equipamento.
+ * Declarar como avaria ou manutencao.
+ * @param inicioUser
+ * @param inicioEquip
+ * @param inicioHistorico
+ * @param username
+ */
 void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
 {
     int inputID, input;
@@ -902,6 +1034,15 @@ void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **
     } while (input != 0);
 }
 
+/**
+ * @fn EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
+ * @brief Escreve o menu que permite ao tecnico a reparacao de equipamentos.
+ * Decidir entre declarar o equipamento como em uso ou desativado.
+ * @param inicioUser
+ * @param inicioEquip
+ * @param inicioHistorico
+ * @param username
+ */
 void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
 {
     int inputID, input;
@@ -993,6 +1134,14 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
     } while (input != 0);
 }
 
+/**
+ * @fn TecnicoEquipsMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, char username[])
+ * @brief Escreve o menu que permite ao tecnico de gerir os seus equipamentos.
+ * Listar seus equipamentos, criar um ficheiro CSV dos seus equipamentos e procurar equipamentos por departamento.
+ * @param inicioEquips
+ * @param inicioDeparts
+ * @param username
+ */
 void TecnicoEquipsMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, char username[])
 {
     int input, num;
@@ -1032,6 +1181,18 @@ void TecnicoEquipsMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, char usernam
     } while (input != 0);
 }
 
+/**
+ * @fn handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDepart, ELEM_E **inicioEquip, ELEM_H **inicioHistorico)
+ * @brief Sistema de permissões que permite escrever o menu dos tecnicos ou do admin.
+ * Admin: Ativar utilizadores, gerir departamentos, gerir equipamentos, criar relatorio, historico, avarias recorrentes, alertas, Reiniciar conta admin
+ * Tecnico: Consultar equipamentos, declarar manutencao/avaria, declarar reparacao
+ * @param inicioUser
+ * @param username
+ * @param inicioDepart
+ * @param inicioEquip
+ * @param inicioHistorico
+ * @return int
+ */
 int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDepart, ELEM_E **inicioEquip, ELEM_H **inicioHistorico)
 {
 
@@ -1138,6 +1299,15 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
     }
 }
 
+/**
+ * @fn loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, ELEM_H **inicioHistorico)
+ * @brief Escreve o menu de log in e chama as suas respetivas funcoes.
+ * @param inicioUser
+ * @param inicioDepart
+ * @param inicioEquip
+ * @param inicioHistorico
+ * @return int
+ */
 int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, ELEM_H **inicioHistorico)
 {
     char inputU[20];
@@ -1149,6 +1319,7 @@ int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, 
     fgets(inputU, sizeof(inputU), stdin);
     inputU[strcspn(inputU, "\n")] = '\0';
 
+    // Verificação para terminar o programa.
     if (strcmp(inputU, "exit") == 0 || strcmp(inputU, "Exit") == 0 || strcmp(inputU, "EXIT") == 0)
     {
         return 0;
@@ -1165,6 +1336,7 @@ int loginMenu(ELEM_U **inicioUser, ELEM_D **inicioDepart, ELEM_E **inicioEquip, 
     fgets(inputP, sizeof(inputP), stdin);
     inputP[strcspn(inputP, "\n")] = '\0';
 
+    // Verificação para terminar o programa.
     if (strcmp(inputP, "exit") == 0 || strcmp(inputP, "Exit") == 0 || strcmp(inputP, "EXIT") == 0)
     {
         return 0;
@@ -1202,4 +1374,5 @@ int main(int argc, char const *argv[])
     equipsRelease(&inicioEquips);
     usersRelease(&inicioUser);
     departsRelease(&inicioDepart);
+    historicoRelease(&inicioHistorico);
 }
