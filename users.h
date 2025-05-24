@@ -1,6 +1,6 @@
 /**
  * @file users.h
- * Header file responsável pela gestão do histórico.
+ * Header file responsável pela gestão dos utilizadores.
  * @author Henrique Fernandes
  */
 

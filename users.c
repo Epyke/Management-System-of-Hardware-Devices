@@ -186,6 +186,7 @@ int usersRelease(ELEM_U **inicio)
         aux = next;
     }
     *inicio = NULL;
+    return 0;
 }
 
 int registrar(char username[], char password[], ELEM_U **inicio)

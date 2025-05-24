@@ -46,14 +46,6 @@ int verifNumSerie(ELEM_E *inicio, int num_serie)
     return 0;
 }
 
-int verifMesmaAvariaExistente(ELEM_E *inicio, char descAvaria[])
-{
-    if (inicio == NULL)
-    {
-        return 0;
-    }
-}
-
 int insIniListaEquips(ELEM_E **inicio, EQUIPE info)
 {
     ELEM_E *new = NULL;
@@ -128,6 +120,7 @@ int writeChangesEquips(ELEM_E *inicio)
         fwrite(&aux->info, sizeof(EQUIPE), 1, fp);
         aux = aux->seguinte;
     }
+    return 0;
     fclose(fp);
 }
 
@@ -165,6 +158,7 @@ int equipsRelease(ELEM_E **inicio)
         aux = next;
     }
     *inicio = NULL;
+    return 0;
 }
 
 void printEquips(ELEM_E *inicio)
@@ -289,7 +283,7 @@ int RemoverEquipsDepartsNum(ELEM_E **inicio, int num)
     return removeCount;
 }
 
-ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num)
+int verifEquipDeparts(ELEM_E *inicio, int num)
 {
     ELEM_E *aux = NULL;
     int found = 0;
@@ -304,12 +298,12 @@ ELEM_E *procurarEquipDeparts(ELEM_E *inicio, int num)
 
     if (found)
     {
-        return aux;
+        return 1;
     }
     else
     {
         printf("Nenhum equipamento encontrado, tente novamente\n");
-        return NULL;
+        return 0;
     }
 }
 

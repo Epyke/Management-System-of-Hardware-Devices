@@ -186,6 +186,7 @@ int writeChangesDeparts(ELEM_D *inicio)
         fwrite(&aux->info, sizeof(DEPART), 1, fp);
         aux = aux->seguinte;
     }
+    return 0;
     fclose(fp);
 }
 
@@ -229,6 +230,7 @@ int departsRelease(ELEM_D **inicio)
         aux = next;
     }
     *inicio = NULL;
+    return 0;
 }
 
 void refreshDepartCodes(ELEM_D *inicio)
