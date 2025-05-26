@@ -120,8 +120,8 @@ int writeChangesEquips(ELEM_E *inicio)
         fwrite(&aux->info, sizeof(EQUIPE), 1, fp);
         aux = aux->seguinte;
     }
-    return 0;
     fclose(fp);
+    return 0;
 }
 
 int registrarEquips(EQUIPE equip, ELEM_E **inicio)
@@ -168,6 +168,7 @@ void printEquips(ELEM_E *inicio)
     if (inicio == NULL)
     {
         printf("Nenhum equipamento existente\n");
+        return;
     }
 
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -192,14 +193,37 @@ void printEquips(ELEM_E *inicio)
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
+int verifEquipsExistTecnico(ELEM_E *inicio, char tecnico[])
+{
+    ELEM_E *aux = NULL;
+    aux = inicio;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->info.tecnico, tecnico) == 0)
+        {
+            return 1;
+        }
+        aux = aux->seguinte;
+    }
+    return 0;
+}
+
 void printEquipsTecnico(ELEM_E *inicio, char tecnico[])
 {
     if (inicio == NULL)
     {
+        printf("Nenhum equipamento existente\n");
+        return;
+    }
+
+    if (verifEquipsExistTecnico(inicio, tecnico) != 1)
+    {
         printf("Nenhum equipamento atribuido\n");
+        return;
     }
 
     ELEM_E *aux = NULL;
+    int found = 0;
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-10s | %-21s | %-13s | %-20s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO", "TECNICO");
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -554,7 +578,7 @@ int filterEquipsStateUsoDesativado(ELEM_E *inicio)
 int filterEquipsDeparts(ELEM_E *inicio, int num)
 {
 
-    if (procurarEquipDeparts(inicio, num) == NULL)
+    if (verifEquipDeparts(inicio, num) != 1)
     {
         return -1;
     }
@@ -749,16 +773,14 @@ ELEM_E *MergeSort(ELEM_E *inicioEquips, int num)
 
 int escreverRelatorioDeparts(ELEM_E *inicioEquips, int num)
 {
-    ELEM_E *equipe = NULL;
-    equipe = procurarEquipDeparts(inicioEquips, num);
-    if (equipe == NULL)
+    if (verifEquipDeparts(inicioEquips, num) != 0)
     {
         return -1;
     }
     char name[50] = "Relatorios/Departs/Depart";
     char ext[] = ".txt";
     char departNum[2];
-    sprintf(departNum, "%d", equipe->info.departement);
+    sprintf(departNum, "%d", num);
     strcat(name, departNum);
     strcat(name, ext);
     FILE *fp = NULL;

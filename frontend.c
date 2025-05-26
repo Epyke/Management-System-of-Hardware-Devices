@@ -772,7 +772,7 @@ void departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
             getchar();
             int num_departs = getDepartsNumb(*inicioDeparts);
 
-            if (procurarEquipDeparts(*inicioEquips, num) == 1)
+            if (verifEquipDeparts(*inicioEquips, num) == 1)
             {
                 printf("Este departamente possui equipamentos atribuidos, tem de elimina-los para concluir a operacao, deseja remove-los ?\n");
                 printf("Y/n\n");

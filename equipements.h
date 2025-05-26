@@ -98,7 +98,7 @@ ELEM_E *procurarEquipDanificados(ELEM_E *inicio, int num);
 ELEM_E *procurarEquipUsoDesativado(ELEM_E *inicio, int num);
 
 /**
- * @fn procurarEquipDeparts(ELEM_E *inicio, int num);
+ * @fn verifEquipDeparts(ELEM_E *inicio, int num);
  * @brief Verifica se existe equipamentos atribuidos à um determinado departamento.
  * Retorna 1 se exisitr.
  * Retorna 0 se não encontrar nenhum resultado.
@@ -118,6 +118,16 @@ int verifEquipDeparts(ELEM_E *inicio, int num);
  * @return int
  */
 int verifNumSerie(ELEM_E *inicio, int num_serie);
+
+/**verifEquipsExistTecnico(ELEM_E *inicio, char tecnico[])
+ * @brief Verifica se existe um equipamento atribuido a um determinado,
+ * Retorna 1 se existir
+ * Retorna 0 se não exisitr
+ * @param inicio
+ * @param tecnico
+ * @return int
+ */
+int verifEquipsExistTecnico(ELEM_E *inicio, char tecnico[]);
 
 /**
  * @fn equipsRelease(ELEM_E **inicio);
@@ -353,7 +363,16 @@ ELEM_E *split(ELEM_E *inicioEquips);
 /**
  * @fn split(ELEM_E *inicioEquips);
  * @brief Junta cada conjunto de elementos de forma a organizá-los
+ * O parâmetro num refere-se ao tipo de comparação que vai ser efetuada.
+ * 1 - ID crescente
+ * 2 - ID descrescente
+ * 3 - Data mais recente
+ * 4 - Estado do equipamento
+ * 5 - Tipo de equipamento
  *
+ * Retorna um apontador para a estrutura first, se second for nulo
+ * Retorna um apontador para a estrutura second, se first for nulo
+ * Retorna um apontador da lista ligada resultande da junção de first e second.
  * @param inicioEquips
  * @return ELEM_E*
  */
