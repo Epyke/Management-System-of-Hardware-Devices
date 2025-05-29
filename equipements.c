@@ -472,7 +472,7 @@ int filterEquipsType(ELEM_E *inicio, char type[])
 {
     if (findExistingStrType(inicio, type) != 1)
     {
-        printf("Nenhum equipamento em manutencao encontrado\n");
+        printf("Nenhum equipamento com o tipo %s encontrado\n", type);
         return -1;
     }
 
@@ -508,7 +508,7 @@ int filterEquipsState(ELEM_E *inicio, char state[])
 
     if (findExistingStrState(inicio, state) != 1)
     {
-        printf("Nenhum resultado encontrado\n");
+        printf("Nenhum equipamento com o estado %s encontrado\n", state);
         return -1;
     }
 
@@ -544,7 +544,7 @@ int filterEquipsStateUsoDesativado(ELEM_E *inicio)
 
     if (findExistingTypeDanificadoUso(inicio) != 1)
     {
-        printf("Nenhum resultado encontrado\n");
+        printf("Nenhum equipamento em uso ou danificado encontrado\n");
         return -1;
     }
 

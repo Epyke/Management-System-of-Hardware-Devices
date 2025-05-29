@@ -1086,7 +1086,6 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
 
         if (filterEquipsState(inicioEquip, "Manutencao") != 0)
         {
-            printf("Nenhum equipamento em manutencao encontrado\n");
             return;
         }
 
