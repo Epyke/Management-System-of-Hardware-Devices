@@ -202,3 +202,16 @@ int historicoRelease(ELEM_H **inicio)
     *inicio = NULL;
     return 0;
 }
+
+int verifAvariasRecorrentes(ELEM_H *inicio)
+{
+    ELEM_H *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.desc.avaria.recorrencias > 2)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}

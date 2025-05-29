@@ -823,6 +823,19 @@ void departsMenu(ELEM_D **inicioDeparts, ELEM_E **inicioEquips)
 void RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
 {
     int input, num;
+
+    if (inicioDeparts == NULL)
+    {
+        printf("Nenhum departamento criado\n");
+        return;
+    }
+
+    if (inicioEquips == NULL)
+    {
+        printf("Nenhum equipamento criado\n");
+        return;
+    }
+
     do
     {
         printf("\n-----------------------------------RELATORIOS-----------------------------------\n");
@@ -894,6 +907,13 @@ void RelatoriosMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts)
 void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
 {
     int input, inputID;
+
+    if (inicioHistorico == NULL)
+    {
+        printf("Historico vazio\n");
+        return;
+    }
+
     do
     {
         printf("\n-----------------------------------HISTORICO-----------------------------------\n");
@@ -1048,6 +1068,12 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
     int inputID, input;
     ELEM_E *equip = NULL;
     HISTORICO historico;
+
+    if (inicioEquip == NULL)
+    {
+        printf("Nenhum equipamento existente\n");
+    }
+
     do
     {
         printf("-----------------------------REPARACAO-----------------------------\n");
@@ -1060,6 +1086,7 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
 
         if (filterEquipsState(inicioEquip, "Manutencao") != 0)
         {
+            printf("Nenhum equipamento em manutencao encontrado\n");
             return;
         }
 
@@ -1165,6 +1192,12 @@ void TecnicoEquipsMenu(ELEM_E *inicioEquips, ELEM_D *inicioDeparts, char usernam
             escreverEquipsCSV(inicioEquips, username);
             break;
         case 3:
+            if (inicioDeparts == NULL)
+            {
+                printf("Nenhum departamento criado\n");
+                break;
+            }
+
             printDeparts(inicioDeparts);
             printf("Introduza o numero de um departamento\n");
             scanf("%d", &num);
@@ -1221,7 +1254,7 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
             case 1:
                 char inputUsername[20];
 
-                if (*inicioUser == NULL)
+                if (verifUsers(*inicioUser) == 0)
                 {
                     printf("Nenhum utilizador na lista de ativacao\n");
                     break;
@@ -1246,8 +1279,22 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 HistoricoMenu(*inicioHistorico, *inicioEquip);
                 break;
             case 6:
+
+                if (verifAvariasRecorrentes(*inicioHistorico) == 0)
+                {
+                    printf("Nenhuma avaria recorrente encontrada\n");
+                    break;
+                }
+
                 printAvariasRecorrencia(*inicioHistorico);
             case 7:
+
+                if (verifAlertasEquipamentos(*inicioEquip) == 0)
+                {
+                    printf("Nenhuma alerta encontrada\n");
+                    break;
+                }
+
                 printAlertas(*inicioEquip);
                 break;
             case 8:

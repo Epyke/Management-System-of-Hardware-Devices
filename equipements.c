@@ -472,7 +472,7 @@ int filterEquipsType(ELEM_E *inicio, char type[])
 {
     if (findExistingStrType(inicio, type) != 1)
     {
-        printf("Nenhum resultado encontrado\n");
+        printf("Nenhum equipamento em manutencao encontrado\n");
         return -1;
     }
 
@@ -876,6 +876,19 @@ int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[])
 
 int escreverEquipsCSV(ELEM_E *inicioEquips, char username[])
 {
+
+    if (inicioEquips == NULL)
+    {
+        printf("Nenhum equipamento existente\n");
+        return 1;
+    }
+
+    if (verifEquipsExistTecnico(inicioEquips, username) != 1)
+    {
+        printf("Nenhum equipamento atribuido\n");
+        return 1;
+    }
+
     FILE *fp = NULL;
     char str[50] = "Relatorios/Equipamentos";
     strcat(str, username);
@@ -936,4 +949,17 @@ void printAlertas(ELEM_E *inicio)
                 aux->info.departement);
         }
     }
+}
+
+int verifAlertasEquipamentos(ELEM_E *inicio)
+{
+    ELEM_E *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.date.year < 2020)
+        {
+            return 1;
+        }
+    }
+    return 0;
 }

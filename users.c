@@ -103,14 +103,14 @@ int resetAdmin(ELEM_U **inicio)
         aux->info.state = 1;
         strcpy(aux->info.password, "admin");
         writeChanges(*inicio);
-
+        printf("Perfil admin reinicializado\n");
         return 0;
     }
     else
     {
+        printf("Erro ao reiniciar o perfil\n");
         return -1;
     }
-    printf("Conta admin reinicializada\n");
 }
 
 int insIniLista(ELEM_U **inicio, USER info)
@@ -267,9 +267,24 @@ int passwordVerif(char username[], char passwd[], ELEM_U inicio)
     return -1;
 }
 
+int verifUsers(ELEM_U *inicio)
+{
+    ELEM_U *aux = NULL;
+    for (aux = inicio; aux != NULL; aux = aux->seguinte)
+    {
+        if (aux->info.state == 1 || aux->info.state == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void printUtilizadores(ELEM_U *inicio)
 {
     ELEM_U *aux = NULL;
+    printf("--------------------------------------------------------------------------------------------\n");
+    printf("%-20s | %-20s | %-20s \n", "USERNAME", "SENHA", "ESTADO (0,1)");
     printf("--------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {

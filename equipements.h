@@ -344,6 +344,7 @@ int escreverRelatorioEstado(ELEM_E *inicioEquips, char state[]);
  * @brief Escreve um ficheiro CSV de todos os equipamentos.abort
  * Retorna 0, relatorio criado com sucesso.
  * Retorna -1, Erro ao abrir o ficheiro
+ * Retorna 1, Nenhum equipamento existente ou atribuido ao utilizador
  * @param inicioEquips
  * @param username
  * @return int
@@ -392,3 +393,11 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num);
  * @return ELEM_E*
  */
 ELEM_E *MergeSort(ELEM_E *inicioEquips, int num);
+
+/**
+ * @fn verifAlertasEquipamentos(ELEM_E *inicio)
+ * @brief Verifica se existe alertas (>5anos)
+ * Retorna 1 se existir
+ * Retorna 0 se não existir
+ */
+int verifAlertasEquipamentos(ELEM_E *inicio);

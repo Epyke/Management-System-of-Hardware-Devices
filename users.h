@@ -141,6 +141,16 @@ ELEM_U *procurarUser(ELEM_U *inicio, char username[]);
 ELEM_U *procurarUserAtivo(ELEM_U *inicio, char username[]);
 
 /**
+ * @fn verifUsers(ELEM_U *inicio)
+ * @brief Verifica se existe um utilizador.
+ * Retorna 1 se exisitr
+ * Retorna 0 se não existir
+ * @param inicio
+ * @return int
+ */
+int verifUsers(ELEM_U *inicio);
+
+/**
  * @fn printUtilizadores(ELEM_U *inicio);
  * @brief Escreve todos os utilizadores
  * @param inicio
