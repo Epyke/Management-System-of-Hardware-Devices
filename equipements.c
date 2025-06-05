@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "equipements.h"
+#include <time.h>
 
 #define EQUIPSFILE "data/equips.dat"
 
@@ -453,13 +454,13 @@ int findExistingStrType(ELEM_E *inicio, char str[])
     return 0;
 }
 
-int findExistingTypeDanificadoUso(ELEM_E *inicio)
+int findExistingStateDanificadoUso(ELEM_E *inicio)
 {
     ELEM_E *aux = NULL;
     aux = inicio;
     while (aux != NULL)
     {
-        if (strcmp(aux->info.type, "Uso") == 0 || strcmp(aux->info.type, "Desativado") == 0)
+        if (strcmp(aux->info.state, "Uso") == 0 || strcmp(aux->info.state, "Desativado") == 0)
         {
             return 1;
         }
@@ -542,9 +543,9 @@ int filterEquipsState(ELEM_E *inicio, char state[])
 int filterEquipsStateUsoDesativado(ELEM_E *inicio)
 {
 
-    if (findExistingTypeDanificadoUso(inicio) != 1)
+    if (findExistingStateDanificadoUso(inicio) != 1)
     {
-        printf("Nenhum equipamento em uso ou danificado encontrado\n");
+        printf("Nenhum equipamento em uso ou desativado\n");
         return -1;
     }
 
@@ -554,7 +555,7 @@ int filterEquipsStateUsoDesativado(ELEM_E *inicio)
     printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (strcmp(aux->info.state, "Uso") == 0 || strcmp(aux->info.state, "Desativado"))
+        if (strcmp(aux->info.state, "Uso") == 0 || strcmp(aux->info.state, "Desativado") == 0)
         {
             printf(
                 "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-13d | %-20s\n",
@@ -922,18 +923,38 @@ int escreverEquipsCSV(ELEM_E *inicioEquips, char username[])
         }
     }
     fclose(fp);
+    printf("Ficheiro CSV criado com sucesso\n");
     return 0;
+}
+
+DATE getCurrentDate()
+{
+    time_t current_time;
+    struct tm *time_info;
+    DATE current_date;
+
+    // Get current time
+    time(&current_time);
+    time_info = localtime(&current_time);
+
+    // Extract date components
+    current_date.day = time_info->tm_mday;
+    current_date.month = time_info->tm_mon + 1;    // tm_mon is 0-11
+    current_date.year = time_info->tm_year + 1900; // tm_year is years since 1900
+
+    return current_date;
 }
 
 void printAlertas(ELEM_E *inicio)
 {
+    DATE data_atual = getCurrentDate();
     ELEM_E *aux = inicio;
     printf("-------------------------------------------------------------------ALERTAS (> 5 anos)-------------------------------------------------------------------\n");
     printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (aux = inicio; aux != NULL; aux = aux->seguinte)
     {
-        if (aux->info.date.year < 2020)
+        if (data_atual.year - aux->info.date.year > 5 || data_atual.year - aux->info.date.year == 5 && data_atual.month > aux->info.date.month || data_atual.year - aux->info.date.year == 5 && data_atual.month == aux->info.date.month && data_atual.day > aux->info.date.day)
         {
             printf(
                 "%-3d | %-31s | %-21s | %-21s | %-20d | %02d/%02d/%04d | %-21s | %-3d \n",

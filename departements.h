@@ -43,18 +43,80 @@ int verifDepartNum(ELEM_D *inicio, int num);
  */
 int getDepartsNumb(ELEM_D *incio);
 
+/**
+ * @fn importDeparts();
+ * @brief Importa o contéudo do ficheiro data/departements.dat, criando uma lista ligada
+ * Retorna o apontador do inicio da lista ligada
+ * Retorna NULL, erro ao abrir o ficheiro
+ * @return ELEM_D*
+ */
 ELEM_D *importDeparts();
 
+/**
+ * @fn departsRelease(ELEM_D **inicio);
+ * @brief Liberta a memoria ocupada pela lista ligada de departamentos.
+ * Retorn -1, lista vazia
+ * Retorna 0, operação concluida
+ * @param inicio
+ * @return int
+ */
 int departsRelease(ELEM_D **inicio);
 
+/**
+ * @fn printDeparts(ELEM_D *inicio);
+ * @brief Escreve todos os departamentos da respetiva lista ligada.
+ * @param inicio
+ */
 void printDeparts(ELEM_D *inicio);
 
+/**
+ * @fn registrarDeparts(DEPART equip, ELEM_D **inicio);
+ * @brief Regista um novo departamento.
+ * Escreve a estrutura passada como argumento para o ficheiro data/departements.dat
+ * Insere a estrutura passada como paramêtre no inicio da lista ligada dos departamentos.
+ * Retorna
+ * @param equip
+ * @param inicio
+ * @return int
+ */
 int registrarDeparts(DEPART equip, ELEM_D **inicio);
 
+/**
+ * @fn eliminarDepart(ELEM_D **inicio, int numero);
+ * @brief Elimina um determinado departamento, escolhido pelo argumento número.
+ * Retorna 0, operação concluida com sucesso.
+ * Retorna -1, nenhum resultado encontrado.
+ * @param inicio
+ * @param numero
+ * @return int
+ */
 int eliminarDepart(ELEM_D **inicio, int numero);
 
+/**
+ * @fn procurarDepart(ELEM_D *inicio, int numero);
+ * @brief Função que procura um determinado departamento consoante o argumento número.
+ * Retorna o apontador para o elemento da lista que possui o departamento encontrado
+ * Retorna NULL, nenhum resultado encontrado
+ * @param inicio
+ * @param numero
+ * @return ELEM_D*
+ */
 ELEM_D *procurarDepart(ELEM_D *inicio, int numero);
 
+/**
+ * @fn writeChangesDeparts(ELEM_D *inicio);
+ * @brief Escreve para o ficheiro data/departements.c a lista ligada dos departamentos.
+ * Retorna 0, operação concluida com sucesso
+ * Retorna -1, Erro ao abrir o ficheiro
+ * @param inicio
+ * @return int
+ */
 int writeChangesDeparts(ELEM_D *inicio);
 
+/**
+ * @fn refreshDepartCodes(ELEM_D *inicio);
+ * @brief Atualiza o número dos departamentos, de modo a estes serem todos consecutivos.
+ * Função usada quando se elimina um elemento.
+ * @param inicio
+ */
 void refreshDepartCodes(ELEM_D *inicio);

@@ -150,13 +150,14 @@ int printAvariasRecorrencia(ELEM_H *inicio);
 /**
  * @fn verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[]);
  * @brief Verifica se existe duas avarias iguais
- * Return 1, se existir
- * Return 0, se não existir
+ * Returna o número de recorrencias de uma avaria
+ * Return 0, se não existir recorrencia
  * @param inicio
  * @param descAvaria
+ * @param ID
  * @return int
  */
-int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[]);
+int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[], int ID);
 
 /**
  * @fn verifAvariasRecorrentes(ELEM_H *inicio);
@@ -166,3 +167,11 @@ int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[]);
  * @param inicio
  */
 int verifAvariasRecorrentes(ELEM_H *inicio);
+
+/**
+ * @fn verifExistingAvariaRecorrente(ELEM_H *inicio)
+ * @brief Verifica se existe uam avaria recorrente
+ * Retorna 1 se existir
+ * Retorna 0 se não existir
+ */
+int verifExistingAvariaRecorrente(ELEM_H *inicio);

@@ -270,7 +270,7 @@ int findExistingStrType(ELEM_E *inicio, char str[]);
  * @param inicio
  * @return int
  */
-int findExistingTypeDanificadoUso(ELEM_E *inicio);
+int findExistingStateDanificadoUso(ELEM_E *inicio);
 
 /**
  * @fn filterEquipsType(ELEM_E *inicio, char type[]);

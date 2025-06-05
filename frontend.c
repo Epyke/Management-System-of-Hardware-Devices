@@ -954,7 +954,7 @@ void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
  */
 void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **inicioHistorico, char username[])
 {
-    int inputID, input;
+    int inputID, input, res;
     ELEM_E *equip = NULL;
     HISTORICO historico;
     do
@@ -972,7 +972,7 @@ void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **
 
         case 1:
 
-            if (filterEquipsStateUsoDesativado(inicioEquip) != 1)
+            if (filterEquipsStateUsoDesativado(inicioEquip) != 0)
             {
                 break;
             }
@@ -998,25 +998,54 @@ void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **
                 printf("Introduza o grau de gravidade da avaria (1-5)\n");
                 scanf("%d", &historico.desc.avaria.gravidade);
                 getchar();
-            } while (historico.desc.avaria.gravidade > 0 && historico.desc.avaria.gravidade < 6);
+            } while (historico.desc.avaria.gravidade < 1 || historico.desc.avaria.gravidade > 5);
 
-            printf("Introduza a descrição da avaria\n");
+            printf("Introduza a descricao da avaria\n");
             fgets(historico.desc.avaria.descAvaria, sizeof(historico.desc.avaria.descAvaria), stdin);
             historico.desc.avaria.descAvaria[strcspn(historico.desc.avaria.descAvaria, "\n")] = '\0';
 
-            if (verifMesmaAvariaExistente(*inicioHistorico, historico.desc.avaria.descAvaria) == 1)
+            int recorrencias = verifMesmaAvariaExistente(*inicioHistorico, historico.desc.avaria.descAvaria, historico.id);
+
+            if (recorrencias != 0)
             {
-                historico.desc.avaria.recorrencias += 1;
+                historico.desc.avaria.recorrencias = recorrencias + 1;
+            }
+            else
+            {
+                historico.desc.avaria.recorrencias = 1;
             }
 
+            do
+            {
+                printf("\nIntroduza a data da declaracao da avaria no formato DD/MM/YYYY\n");
+                char inputStr[11];
+                fgets(inputStr, sizeof(inputStr), stdin);
+                inputStr[strcspn(inputStr, "\n")] = '\0';
+                res = sscanf(inputStr, "%d/%d/%d", &historico.data.day, &historico.data.month, &historico.data.year);
+                getchar();
+                if (res != 3)
+                {
+                    printf("Erro relativamente ao formato introduzido\n");
+                    continue;
+                }
+
+                if (!HistoricoDateSystem(historico.data))
+                {
+                    continue;
+                }
+
+                break;
+            } while (1);
+
             strcpy(equip->info.state, "Danificado");
+            strcpy(historico.tipo, "Avaria");
             writeChangesEquips(inicioEquip);
             registrarHistorico(historico, inicioHistorico);
-            printf("Atribuicao efetuada com sucesso\n");
+            printf("Declaracao efetuada com sucesso\n");
             break;
         case 2:
 
-            if (filterEquipsState(inicioEquip, "Danificado") != 1)
+            if (filterEquipsState(inicioEquip, "Danificado") != 0)
             {
                 break;
             }
@@ -1032,10 +1061,33 @@ void EquipamentosDeclararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **
                 break;
             }
 
+            do
+            {
+                printf("\nIntroduza a data de inicio de manutencao no formato DD/MM/YYYY\n");
+                char inputStr[11];
+                fgets(inputStr, sizeof(inputStr), stdin);
+                inputStr[strcspn(inputStr, "\n")] = '\0';
+                res = sscanf(inputStr, "%d/%d/%d", &historico.data.day, &historico.data.month, &historico.data.year);
+                getchar();
+                if (res != 3)
+                {
+                    printf("Erro relativamente ao formato introduzido\n");
+                    continue;
+                }
+
+                if (!HistoricoDateSystem(historico.data))
+                {
+                    continue;
+                }
+
+                break;
+            } while (1);
+
             strcpy(historico.equipTipo, equip->info.type);
             strcpy(historico.brand, equip->info.brand);
             strcpy(historico.model, equip->info.model);
             historico.id = equip->info.id;
+            strcpy(historico.tipo, "Manutencao");
 
             strcpy(historico.desc.manutencao.tecnico, username);
             strcpy(equip->info.tecnico, username);
@@ -1108,7 +1160,7 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
         int res;
         do
         {
-            printf("\nIntroduza a data de aquisicao no formato DD/MM/YYYY\n");
+            printf("\nIntroduza a data da reparacao no formato DD/MM/YYYY\n");
             char inputStr[11];
             fgets(inputStr, sizeof(inputStr), stdin);
             inputStr[strcspn(inputStr, "\n")] = '\0';
@@ -1128,8 +1180,8 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
             break;
         } while (1);
 
-        printf("Introduza o custo da reparacao\n");
-        scanf("%d", &historico.desc.reparacao.custo);
+        printf("Introduza o custo da reparacao em euros\n");
+        scanf("%f", &historico.desc.reparacao.custo);
         getchar();
 
         strcpy(historico.desc.reparacao.tecnico, equip->info.tecnico);
@@ -1137,6 +1189,8 @@ void EquipamentosRepararUser(ELEM_U *inicioUser, ELEM_E *inicioEquip, ELEM_H **i
         printf("Indique as pecas substituidas na reparacao\n");
         fgets(historico.desc.reparacao.pecas_substituidas, sizeof(historico.desc.reparacao.pecas_substituidas), stdin);
         historico.desc.reparacao.pecas_substituidas[strcspn(historico.desc.reparacao.pecas_substituidas, "\n")] = '\0';
+
+        strcpy(historico.tipo, "Reparacao");
 
         switch (input)
         {
@@ -1278,14 +1332,8 @@ int handlePermissions(ELEM_U **inicioUser, char username[20], ELEM_D **inicioDep
                 HistoricoMenu(*inicioHistorico, *inicioEquip);
                 break;
             case 6:
-
-                if (verifAvariasRecorrentes(*inicioHistorico) == 0)
-                {
-                    printf("Nenhuma avaria recorrente encontrada\n");
-                    break;
-                }
-
                 printAvariasRecorrencia(*inicioHistorico);
+                break;
             case 7:
 
                 if (verifAlertasEquipamentos(*inicioEquip) == 0)
