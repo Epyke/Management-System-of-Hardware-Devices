@@ -81,7 +81,7 @@ int registrarHistorico(HISTORICO historico, ELEM_H **inicio)
     return 0;
 }
 
-void printHistoricoMovMan(ELEM_H *inicio)
+void printHistorico(ELEM_H *inicio)
 {
     if (inicio == NULL)
     {
@@ -132,7 +132,7 @@ void printHistoricoMovMan(ELEM_H *inicio)
     printf("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-void printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID)
+void printHistoricoEquipID(ELEM_H *inicio, int ID)
 {
     if (inicio == NULL)
     {

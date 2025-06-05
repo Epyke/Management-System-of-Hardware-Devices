@@ -401,3 +401,11 @@ ELEM_E *MergeSort(ELEM_E *inicioEquips, int num);
  * Retorna 0 se não existir
  */
 int verifAlertasEquipamentos(ELEM_E *inicio);
+
+/**
+ * @fn DATE ObterDataAtual();
+ * @brief Guarda a data atual.
+ * Retorna uma estrutura DATE com a data atual.
+ * @return DATE
+ */
+DATE ObterDataAtual();

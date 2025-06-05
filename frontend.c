@@ -366,7 +366,7 @@ int HistoricoDateSystem(DATE_H date)
  * @param date
  * @return int
  */
-void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
+void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHistorico)
 {
     EQUIPE equip;
     int id = getEquipsNumb(*inicioEquips);
@@ -449,6 +449,45 @@ void inputEquips(ELEM_E **inicioEquips, ELEM_D *inicioDeparts)
     } while (verifDepartNum(inicioDeparts, equip.departement) == 0);
 
     strcpy(equip.tecnico, "Nenhum");
+
+    if (strcmp(equip.state, "Danificado") == 0)
+    {
+        HISTORICO historico;
+        printf("Como criou um equipamento danificado, declare a sua avaria:\n");
+        strcpy(historico.equipTipo, equip.type);
+        strcpy(historico.brand, equip.brand);
+        strcpy(historico.model, equip.model);
+        historico.id = equip.id;
+
+        do
+        {
+            printf("Introduza o grau de gravidade da avaria (1-5)\n");
+            scanf("%d", &historico.desc.avaria.gravidade);
+            getchar();
+        } while (historico.desc.avaria.gravidade < 1 || historico.desc.avaria.gravidade > 5);
+
+        printf("Introduza a descricao da avaria\n");
+        fgets(historico.desc.avaria.descAvaria, sizeof(historico.desc.avaria.descAvaria), stdin);
+        historico.desc.avaria.descAvaria[strcspn(historico.desc.avaria.descAvaria, "\n")] = '\0';
+
+        int recorrencias = verifMesmaAvariaExistente(*inicioHistorico, historico.desc.avaria.descAvaria, historico.id);
+
+        if (recorrencias != 0)
+        {
+            historico.desc.avaria.recorrencias = recorrencias + 1;
+        }
+        else
+        {
+            historico.desc.avaria.recorrencias = 1;
+        }
+
+        historico.data.day = equip.date.day;
+        historico.data.month = equip.date.month;
+        historico.data.year = equip.date.year;
+
+        strcpy(historico.tipo, "Avaria");
+        registrarHistorico(historico, inicioHistorico);
+    }
 
     registrarEquips(equip, inicioEquips);
 }
@@ -678,7 +717,7 @@ void equipsMenu(ELEM_E **inicioEquips, ELEM_D *inicioDeparts, ELEM_H **inicioHis
             listEquips(inicioEquips, inicioDeparts);
             break;
         case 2:
-            inputEquips(inicioEquips, inicioDeparts);
+            inputEquips(inicioEquips, inicioDeparts, inicioHistorico);
             break;
         case 3:
             if (inicioEquips == NULL)
@@ -927,13 +966,13 @@ void HistoricoMenu(ELEM_H *inicioHistorico, ELEM_E *inicioEquip)
         switch (input)
         {
         case 1:
-            printHistoricoMovMan(inicioHistorico);
+            printHistorico(inicioHistorico);
             break;
         case 2:
             printEquips(inicioEquip);
             printf("Introduza o ID do equipamento\n");
             scanf("%d", &inputID);
-            printHistoricoEquipIDMovMan(inicioHistorico, inputID);
+            printHistoricoEquipID(inicioHistorico, inputID);
             break;
         case 0:
             break;

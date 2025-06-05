@@ -123,19 +123,19 @@ int insIniListaHistorico(ELEM_H **inicio, HISTORICO info);
 int registrarHistorico(HISTORICO historico, ELEM_H **inicio);
 
 /**
- * @fn printHistoricoMovMan(ELEM_H *inicio);
- * @brief Escreve o historico de movimentações e de manutenções de todos os equipamentos.
+ * @fn void printHistorico(ELEM_H *inicio);
+ * @brief Escreve o historico de movimentações, manutenções, reparações e avarias de todos os equipamentos.
  * @param inicio
  */
-void printHistoricoMovMan(ELEM_H *inicio);
+void printHistorico(ELEM_H *inicio);
 
 /**
- * @fn printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID);
- * @brief Escreve o historico de movimentações e de manutenções de um equipamento em específico (ID passado por parâmetro).
+ * @fn void printHistoricoEquipID(ELEM_H *inicio, int ID);
+ * @brief Escreve o historico de movimentações, manutenções, reparações e avarias de um equipamento em específico (ID passado por parâmetro).
  * @param inicio
  * @param ID
  */
-void printHistoricoEquipIDMovMan(ELEM_H *inicio, int ID);
+void printHistoricoEquipID(ELEM_H *inicio, int ID);
 
 /**
  * @fn printAvariasRecorrencia(ELEM_H *inicio);
