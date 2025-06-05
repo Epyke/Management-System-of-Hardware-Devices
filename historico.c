@@ -226,8 +226,7 @@ int printAvariasRecorrencia(ELEM_H *inicio)
                 while (temp != aux)
                 {
                     if (strcmp(temp->info.tipo, "Avaria") == 0 &&
-                        temp->info.id == aux->info.id &&
-                        strcmp(temp->info.desc.avaria.descAvaria, temp->info.desc.avaria.descAvaria) == 0)
+                        strcmp(temp->info.desc.avaria.descAvaria, aux->info.desc.avaria.descAvaria) == 0)
                     {
                         is_first_occurrence = 0;
                         break;
@@ -244,7 +243,6 @@ int printAvariasRecorrencia(ELEM_H *inicio)
                     while (search != NULL)
                     {
                         if (strcmp(search->info.tipo, "Avaria") == 0 &&
-                            search->info.id == aux->info.id &&
                             strcmp(search->info.desc.avaria.descAvaria, aux->info.desc.avaria.descAvaria) == 0 &&
                             search->info.desc.avaria.recorrencias > highest->info.desc.avaria.recorrencias)
                         {
@@ -280,7 +278,7 @@ int verifMesmaAvariaExistente(ELEM_H *inicio, char descAvaria[], int ID)
     aux = inicio;
     while (aux != NULL)
     {
-        if (strcmp(aux->info.tipo, "Avaria") == 0 && strcmp(aux->info.desc.avaria.descAvaria, descAvaria) == 0 && aux->info.id == ID)
+        if (strcmp(aux->info.tipo, "Avaria") == 0 && strcmp(aux->info.desc.avaria.descAvaria, descAvaria) == 0)
         {
             if (aux->info.desc.avaria.recorrencias > maior)
             {

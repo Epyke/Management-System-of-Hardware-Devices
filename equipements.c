@@ -611,14 +611,14 @@ int filterEquipsDeparts(ELEM_E *inicio, int num)
     return 0;
 }
 
-// Function to split the singly linked list into two halves
+// Função para dividir a lista ligada em dois
 ELEM_E *split(ELEM_E *inicioEquips)
 {
     ELEM_E *fast = inicioEquips;
     ELEM_E *slow = inicioEquips;
 
-    // Move fast pointer two steps and slow pointer
-    // one step until fast reaches the end
+    // o apontador fast percorre dois elementos
+    // o apontador slow percorre apenas um
     while (fast != NULL && fast->seguinte != NULL)
     {
         fast = fast->seguinte->seguinte;
@@ -628,17 +628,18 @@ ELEM_E *split(ELEM_E *inicioEquips)
         }
     }
 
-    // Split the list into two halves
+    // Divisão da lista ligada em dois
     ELEM_E *temp = slow->seguinte;
     slow->seguinte = NULL;
+    // Retorna o início da segunda metade da lista ligada
     return temp;
 }
 
-// Function to merge two sorted singly linked lists
+// Função que junta duas listas ligadas
 ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
 {
 
-    // If either list is empty, return the other list
+    // Se um dos apontadores for nulo, a outra lista ligada está ordenada
     if (first == NULL)
         return second;
     if (second == NULL)
@@ -649,15 +650,15 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     case 1:
         if (first->info.id <= second->info.id)
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
+            // Junta recursivamente o first com os restantes elementos
+            // Como o ID do first é menor que o do second, vamos comparar o second com o elemento seguinte do first
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else
         {
-            // Recursively merge the rest of the lists
-            // and link the result to the current node
+            // Junta recursivamente o second com os restantes elementos
+            // Como o ID do second é menor que o do first, vamos comparar o first com o elemento seguinte do second
             second->seguinte = merge(first, second->seguinte, num);
             return second;
         }
@@ -666,15 +667,11 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     case 2:
         if (first->info.id >= second->info.id)
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else
         {
-            // Recursively merge the rest of the lists
-            // and link the result to the current node
             second->seguinte = merge(first, second->seguinte, num);
             return second;
         }
@@ -683,29 +680,21 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     case 3:
         if (first->info.date.year > second->info.date.year)
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else if ((first->info.date.year == second->info.date.year) && (first->info.date.month > second->info.date.month))
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else if ((first->info.date.year == second->info.date.year) && (first->info.date.month == second->info.date.month) && (first->info.date.day > second->info.date.day))
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else
         {
-            // Recursively merge the rest of the lists
-            // and link the result to the current node
             second->seguinte = merge(first, second->seguinte, num);
             return second;
         }
@@ -714,15 +703,11 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     case 4:
         if (strcmp(first->info.state, second->info.state) <= 0)
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else
         {
-            // Recursively merge the rest of the lists
-            // and link the result to the current node
             second->seguinte = merge(first, second->seguinte, num);
             return second;
         }
@@ -731,15 +716,11 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     case 5:
         if (strcmp(first->info.type, second->info.type) <= 0)
         {
-            // Recursively merge the rest of the lists and
-            // link the result to the current node
             first->seguinte = merge(first->seguinte, second, num);
             return first;
         }
         else
         {
-            // Recursively merge the rest of the lists
-            // and link the result to the current node
             second->seguinte = merge(first, second->seguinte, num);
             return second;
         }
@@ -750,25 +731,25 @@ ELEM_E *merge(ELEM_E *first, ELEM_E *second, int num)
     // Pick the smaller value between first and second nodes
 }
 
-// Function to perform merge sort on a singly linked list
+// Função que efetua o algoritmo Merge Sort numa lista ligada
 ELEM_E *MergeSort(ELEM_E *inicioEquips, int num)
 {
 
-    // Base case: if the list is empty or has only one node,
-    // it's already sorted
+    // Caso base, se a lista não tiver nenhum elemento
+    // Está ordenada
     if (inicioEquips == NULL || (inicioEquips)->seguinte == NULL)
     {
         return inicioEquips;
     }
 
-    // Split the list into two halves
+    // Divide a lista em dois, segunda é o apontador para o inicio da segunda lista
     ELEM_E *segunda = split(inicioEquips);
 
-    // Recursively sort each half
+    // Ordenação recursiva de cada metade
     inicioEquips = MergeSort(inicioEquips, num);
     segunda = MergeSort(segunda, num);
 
-    // Merge the two sorted halves
+    // Junta as duas metades ordenadas
     return merge(inicioEquips, segunda, num);
 }
 
@@ -927,27 +908,27 @@ int escreverEquipsCSV(ELEM_E *inicioEquips, char username[])
     return 0;
 }
 
-DATE getCurrentDate()
+DATE ObterDataAtual()
 {
     time_t current_time;
     struct tm *time_info;
     DATE current_date;
 
-    // Get current time
+    // obter a data atual
     time(&current_time);
     time_info = localtime(&current_time);
 
-    // Extract date components
+    // Extrair os elementos da data
     current_date.day = time_info->tm_mday;
-    current_date.month = time_info->tm_mon + 1;    // tm_mon is 0-11
-    current_date.year = time_info->tm_year + 1900; // tm_year is years since 1900
+    current_date.month = time_info->tm_mon + 1;    // tm_mon, como janeiro começa no 0, +1 porque guardas os meses num array
+    current_date.year = time_info->tm_year + 1900; // tm_year, corresponde aos ano desde 1900
 
     return current_date;
 }
 
 void printAlertas(ELEM_E *inicio)
 {
-    DATE data_atual = getCurrentDate();
+    DATE data_atual = ObterDataAtual();
     ELEM_E *aux = inicio;
     printf("-------------------------------------------------------------------ALERTAS (> 5 anos)-------------------------------------------------------------------\n");
     printf("%-3s | %-31s | %-21s | %-21s | %-20s | %-11s | %-21s | %-13s \n", "ID", "TIPO", "MARCA", "MODELO", "NUMERO DE SERIE", "DATA", "ESTADO", "DEPARTAMENTO");
